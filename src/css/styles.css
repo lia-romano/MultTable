@@ -1219,6 +1219,14 @@ body {
     line-height: 1.2;
 }
 
+.counter-text-short {
+    display: none;
+}
+
+.counter-text-full {
+    display: inline;
+}
+
 .counter-number {
     font-weight: bold;
     color: #ffeb3b;
@@ -1314,20 +1322,26 @@ body {
 @media (max-width: 575px) {
     .visitor-counter {
         font-size: 10px;
-        height: 50px;
+        height: auto;
+        min-height: 60px;
+        padding: 8px 0;
     }
     
     .counter-container {
-        padding: 0 5px;
-        gap: 6px;
+        padding: 0 10px;
+        gap: 8px;
         flex-direction: column;
         justify-content: center;
+        align-items: stretch;
     }
     
     .counter-item {
-        gap: 3px;
+        gap: 4px;
         text-align: center;
-        line-height: 1.1;
+        line-height: 1.2;
+        justify-content: center;
+        padding: 2px 0;
+        flex-wrap: wrap;
     }
     
     .counter-separator {
@@ -1335,17 +1349,26 @@ body {
     }
     
     .counter-text {
-        font-size: 9px;
-        word-break: break-word;
-        line-height: 1.1;
+        font-size: 10px;
+        line-height: 1.2;
+        text-align: center;
+    }
+    
+    .counter-text-full {
+        display: none;
+    }
+    
+    .counter-text-short {
+        display: inline;
     }
     
     .counter-icon {
-        font-size: 11px;
+        font-size: 12px;
     }
     
     .counter-number {
-        font-size: 11px;
+        font-size: 12px;
+        font-weight: bold;
     }
     
     .reset-btn {
@@ -1355,5 +1378,57 @@ body {
     
     body {
         padding-bottom: 70px;
+    }
+}
+
+/* Extra small screens (very small phones) */
+@media (max-width: 360px) {
+    .visitor-counter {
+        font-size: 9px;
+        height: auto;
+        min-height: 75px;
+        padding: 5px 0;
+    }
+    
+    .counter-container {
+        padding: 0 5px;
+        gap: 6px;
+    }
+    
+    .counter-item {
+        gap: 3px;
+        padding: 3px 0;
+    }
+    
+    .counter-text {
+        font-size: 9px;
+        max-width: 100%;
+        word-wrap: break-word;
+    }
+    
+    .counter-text-full {
+        display: none;
+    }
+    
+    .counter-text-short {
+        display: inline;
+    }
+    
+    .counter-icon {
+        font-size: 10px;
+    }
+    
+    .counter-number {
+        font-size: 10px;
+    }
+    
+    .reset-btn {
+        font-size: 8px;
+        padding: 1px;
+        margin-left: 2px;
+    }
+    
+    body {
+        padding-bottom: 80px;
     }
 }
