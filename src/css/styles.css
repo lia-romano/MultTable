@@ -350,32 +350,47 @@ body {
     transform: scale(1.1);
 }
 
-/* Header Section with Back Button */
+/* Header Section with Back Button and Difficulty */
 .header-section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 15px;
 }
 
 .header-section h1 {
     margin: 0;
     color: #667eea;
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+    flex: 1;
+    text-align: right;
+}
+
+.header-section .difficulty-display {
+    background-color: #e8f4fd;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: #2c3e50;
+    border: 2px solid #667eea;
+    margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .back-btn {
     background: linear-gradient(45deg, #f44336, #d32f2f);
     color: white;
     border: none;
-    padding: 12px 20px;
-    font-size: 1rem;
-    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    border-radius: 6px;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .back-btn:hover {
@@ -397,6 +412,19 @@ body {
 
 .retry-indicator.show {
     display: block;
+}
+
+/* Progress Indicator */
+.progress-indicator {
+    background-color: #e8f6f3;
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    text-align: center;
+    color: #2c3e50;
+    border: 2px solid #28a745;
+    font-weight: bold;
 }
 
 /* FORCE CORRECT LAYOUT - High specificity overrides */

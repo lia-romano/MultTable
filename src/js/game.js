@@ -87,9 +87,29 @@ function updateProgressTable() {
     });
 }
 
+function updateProgressIndicator() {
+    const progressElement = document.getElementById('progress-indicator');
+    const completedQuestions = questionStatus.filter(status => status === 'correct').length;
+    const totalQuestions = questions.length;
+    const remainingQuestions = totalQuestions - completedQuestions;
+    
+    if (remainingQuestions === 0) {
+        progressElement.textContent = '🎉 כל התרגילים הושלמו!';
+        progressElement.style.backgroundColor = '#d4edda';
+        progressElement.style.borderColor = '#28a745';
+    } else {
+        progressElement.textContent = `נשארו ${remainingQuestions} תרגילים מתוך ${totalQuestions}`;
+        progressElement.style.backgroundColor = '#e8f6f3';
+        progressElement.style.borderColor = '#28a745';
+    }
+}
+
 function displayQuestion() {
     const questionElement = document.getElementById('question');
     questionElement.textContent = questions[currentQuestionIndex].question;
+    
+    // Update progress indicator
+    updateProgressIndicator();
     
     // Show retry indicator if this is a retry question
     const retryIndicator = document.getElementById('retry-indicator');
@@ -102,11 +122,19 @@ function displayQuestion() {
     
     // Clear previous feedback
     document.getElementById('feedback').textContent = '';
-    document.getElementById('answer').value = '';
+    const answerInput = document.getElementById('answer');
+    answerInput.value = '';
     document.getElementById('submit').style.display = 'inline-block';
     
-    // Focus on the answer input
-    document.getElementById('answer').focus();
+    // Enhanced focus for mobile devices (iPhone)
+    setTimeout(() => {
+        answerInput.focus();
+        // Force keyboard to appear on mobile
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            answerInput.click();
+            answerInput.focus();
+        }
+    }, 100);
     
     // Update progress table to highlight current question
     updateProgressTable();
@@ -156,6 +184,16 @@ function checkAnswer() {
     // Auto-advance to next question after 2 seconds
     setTimeout(() => {
         nextQuestion();
+        // Ensure keyboard stays active after auto-advance
+        setTimeout(() => {
+            const answerInput = document.getElementById('answer');
+            if (answerInput) {
+                answerInput.focus();
+                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+                    answerInput.click();
+                }
+            }
+        }, 200);
     }, 2000);
 }
 
