@@ -304,6 +304,11 @@ function startGame(difficulty) {
     resetGame();
     generateQuestions(difficulty);
     
+    // Reset session counter when starting new game
+    if (typeof resetSessionCounter === 'function') {
+        resetSessionCounter();
+    }
+    
     // Start with the first question
     currentQuestionIndex = 0;
     mainProgressIndex = 0;

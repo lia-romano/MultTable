@@ -70,23 +70,23 @@
             }
         }
         
+        // Session counter for current round
+        let sessionExerciseCount = 0;
+        
         // Function to increment global exercise counter
         function incrementExerciseCount() {
             console.log('incrementExerciseCount called - attempting to increment global counter');
+            
+            // Increment session counter and update display immediately
+            sessionExerciseCount++;
+            updateSessionCounterDisplay();
+            
             try {
                 // Create a hidden iframe to trigger the counter increment
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
                 iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3';
                 document.body.appendChild(iframe);
-                
-                // After iframe loads, refresh the display
-                iframe.onload = function() {
-                    console.log('Counter incremented, refreshing display...');
-                    setTimeout(() => {
-                        refreshExerciseCounterDisplay();
-                    }, 1000);
-                };
                 
                 // Remove iframe after 3 seconds
                 setTimeout(() => {
@@ -101,29 +101,18 @@
             }
         }
         
-        // Function to refresh the exercise counter display
-        function refreshExerciseCounterDisplay() {
-            try {
-                // Find the exercise counter container
-                const exerciseCounterContainer = document.querySelector('.counter-item:nth-child(3) .counter-number');
-                if (exerciseCounterContainer) {
-                    // Remove old script
-                    const oldScript = exerciseCounterContainer.querySelector('script');
-                    if (oldScript) {
-                        oldScript.remove();
-                    }
-                    
-                    // Add new script with timestamp to avoid caching
-                    const newScript = document.createElement('script');
-                    newScript.type = 'text/javascript';
-                    newScript.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3?' + Date.now();
-                    exerciseCounterContainer.appendChild(newScript);
-                    
-                    console.log('Exercise counter display refreshed');
-                }
-            } catch (error) {
-                console.error('Failed to refresh exercise counter display:', error);
+        // Function to update the session counter display
+        function updateSessionCounterDisplay() {
+            const sessionCountElement = document.getElementById('session-count');
+            if (sessionCountElement) {
+                sessionCountElement.textContent = sessionExerciseCount.toLocaleString();
             }
+        }
+        
+        // Function to reset session counter when starting new game
+        function resetSessionCounter() {
+            sessionExerciseCount = 0;
+            updateSessionCounterDisplay();
         }
     </script>
     <!-- Schema.org markup for Google -->
@@ -261,9 +250,15 @@
             </div>
             <div class="counter-separator">|</div>
             <div class="counter-item">
+                <span class="counter-icon">⚡</span>
+                <span class="counter-text">תרגילים בסיבוב זה: </span>
+                <span id="session-count" class="counter-number session">0</span>
+            </div>
+            <div class="counter-separator">|</div>
+            <div class="counter-item">
                 <span class="counter-icon">📚</span>
                 <span class="counter-text">תרגילים בעולם: </span>
-                <span class="counter-number">
+                <span id="exercise-counter-container" class="counter-number">
                     <script type="text/javascript" src="https://freevisitorcounters.com/en/home/counter/1363237/t/3"></script>
                 </span>
             </div>
@@ -286,6 +281,9 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize personal count immediately
             getPersonalCount();
+            
+            // Initialize session count
+            updateSessionCounterDisplay();
             
             // Global visitor counter is handled automatically by freevisitorcounters.com
             // No manual initialization needed
