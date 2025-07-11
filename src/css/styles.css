@@ -135,35 +135,40 @@ body {
     border: 2px solid #667eea;
 }
 
+/* ========== QUESTION AND ANSWER LAYOUT - WORKING VERSION ========== */
+
 .question-line {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 30px 0 15px 0;
-    font-size: 3rem;
-    font-weight: bold;
-    padding: 20px;
+    display: block;
+    width: 100%;
+    margin: 30px 0 20px 0;
+    padding: 25px;
     background-color: #f8f9fa;
     border-radius: 15px;
     border: 3px solid #667eea;
+    text-align: center;
 }
 
 #question {
+    font-size: 3rem;
+    font-weight: bold;
     color: #333;
-    text-align: center;
+    margin: 0;
+    padding: 0;
 }
 
 .answer-line {
     display: flex;
-    align-items: center;
+    width: 100%;
+    margin: 20px 0 30px 0;
     justify-content: center;
+    align-items: center;
     gap: 20px;
-    margin: 15px 0 30px 0;
     direction: rtl;
 }
 
 #answer {
     width: 120px;
+    height: 60px;
     padding: 15px;
     font-size: 2.5rem;
     border: 3px solid #ddd;
@@ -171,6 +176,7 @@ body {
     text-align: center;
     font-weight: bold;
     direction: ltr;
+    background-color: #fff;
 }
 
 #answer:focus {
@@ -184,16 +190,20 @@ body {
     color: white;
     border: none;
     padding: 15px 25px;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     border-radius: 10px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    white-space: nowrap;
+    height: 60px;
+    min-width: 80px;
 }
 
 #submit:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+#submit:active {
+    transform: translateY(0);
 }
 
 #submit, #next, #back-to-menu {
@@ -389,6 +399,162 @@ body {
     display: block;
 }
 
+/* FORCE CORRECT LAYOUT - High specificity overrides */
+.game-container .question-line {
+    display: block !important;
+    width: 100% !important;
+    margin: 30px auto 20px auto !important;
+    padding: 25px !important;
+    background-color: #f8f9fa !important;
+    border-radius: 15px !important;
+    border: 3px solid #667eea !important;
+    text-align: center !important;
+    clear: both !important;
+}
+
+.game-container .question-line #question {
+    font-size: 3rem !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    text-align: center !important;
+    width: 100% !important;
+}
+
+.game-container .answer-line {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    margin: 20px auto 30px auto !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+    direction: rtl !important;
+    clear: both !important;
+}
+
+.game-container .answer-line #answer {
+    width: 120px !important;
+    height: 60px !important;
+    padding: 15px !important;
+    font-size: 2.5rem !important;
+    border: 3px solid #ddd !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    direction: ltr !important;
+    background-color: #fff !important;
+    order: 1 !important;
+}
+
+.game-container .answer-line #submit {
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    color: white !important;
+    border: none !important;
+    padding: 15px 25px !important;
+    font-size: 1.2rem !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    height: 60px !important;
+    min-width: 80px !important;
+    order: 2 !important;
+}
+
+/* =============================================== */
+/* FINAL OVERRIDE - FORCE CORRECT LAYOUT */
+/* =============================================== */
+
+/* Reset everything first */
+#game-screen .question-line,
+#game-screen .answer-line,
+#game-screen #question,
+#game-screen #answer,
+#game-screen #submit {
+    all: unset !important;
+    box-sizing: border-box !important;
+}
+
+/* Question container - ALWAYS block, ALWAYS separate */
+#game-screen .question-line {
+    display: block !important;
+    width: 100% !important;
+    margin: 30px 0 20px 0 !important;
+    padding: 25px !important;
+    background-color: #f8f9fa !important;
+    border-radius: 15px !important;
+    border: 3px solid #667eea !important;
+    text-align: center !important;
+    font-family: Arial, sans-serif !important;
+}
+
+/* Question text - ALWAYS block inside container */
+#game-screen #question {
+    display: block !important;
+    font-size: 3rem !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    text-align: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    font-family: Arial, sans-serif !important;
+}
+
+/* Answer container - ALWAYS flex, ALWAYS below question */
+#game-screen .answer-line {
+    display: flex !important;
+    flex-direction: row !important;
+    width: 100% !important;
+    margin: 20px 0 30px 0 !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+    direction: rtl !important;
+}
+
+/* Answer input - ALWAYS in the flex container */
+#game-screen #answer {
+    display: block !important;
+    width: 120px !important;
+    height: 60px !important;
+    padding: 15px !important;
+    font-size: 2.5rem !important;
+    border: 3px solid #ddd !important;
+    border-radius: 10px !important;
+    text-align: center !important;
+    font-weight: bold !important;
+    direction: ltr !important;
+    background-color: #fff !important;
+    font-family: Arial, sans-serif !important;
+}
+
+/* Submit button - ALWAYS in the flex container */
+#game-screen #submit {
+    display: block !important;
+    background: linear-gradient(45deg, #667eea, #764ba2) !important;
+    color: white !important;
+    border: none !important;
+    padding: 15px 25px !important;
+    font-size: 1.2rem !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    height: 60px !important;
+    min-width: 80px !important;
+    font-family: Arial, sans-serif !important;
+    text-align: center !important;
+}
+
+/* Remove any potential interference */
+#game-screen .question-line::before,
+#game-screen .question-line::after,
+#game-screen .answer-line::before,
+#game-screen .answer-line::after {
+    content: none !important;
+    display: none !important;
+}
+
 /* Responsive Design - Mobile First Approach */
 
 /* Base styles for very small devices (phones in portrait, less than 576px) */
@@ -459,9 +625,8 @@ body {
     }
     
     .question-line {
-        font-size: 2rem;
-        margin: 20px 0 10px 0;
-        padding: 15px;
+        margin: 20px auto 15px auto;
+        padding: 20px;
     }
     
     #question {
@@ -469,8 +634,21 @@ body {
     }
     
     .answer-line {
+        margin: 15px auto 25px auto;
         gap: 15px;
-        margin: 10px 0 20px 0;
+    }
+    
+    #answer {
+        width: 100px;
+        height: 50px;
+        font-size: 2rem;
+        padding: 12px;
+    }
+    
+    #submit {
+        height: 50px;
+        padding: 12px 20px;
+        font-size: 1.1rem;
     }
     
     #answer {
@@ -554,9 +732,8 @@ body {
     }
     
     .question-line {
-        font-size: 1.8rem;
-        margin: 15px 0 10px 0;
-        padding: 12px;
+        margin: 15px auto 10px auto;
+        padding: 15px;
     }
     
     #question {
@@ -564,7 +741,21 @@ body {
     }
     
     .answer-line {
+        margin: 10px auto 20px auto;
         gap: 12px;
+    }
+    
+    #answer {
+        width: 90px;
+        height: 45px;
+        font-size: 1.6rem;
+        padding: 10px;
+    }
+    
+    #submit {
+        height: 45px;
+        padding: 10px 18px;
+        font-size: 1rem;
     }
     
     #answer {
@@ -622,8 +813,8 @@ body {
     }
     
     .question-line {
-        font-size: 2.2rem;
-        padding: 15px;
+        margin: 20px auto 15px auto;
+        padding: 18px;
     }
     
     #question {
@@ -631,7 +822,20 @@ body {
     }
     
     .answer-line {
+        margin: 15px auto 25px auto;
         gap: 15px;
+    }
+    
+    #answer {
+        width: 110px;
+        height: 55px;
+        font-size: 1.8rem;
+    }
+    
+    #submit {
+        height: 55px;
+        padding: 12px 22px;
+        font-size: 1.1rem;
     }
     
     #answer {

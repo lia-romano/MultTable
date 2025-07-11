@@ -56,12 +56,18 @@
             </div>
             <div class="difficulty-display" id="current-difficulty"></div>
             <div class="retry-indicator" id="retry-indicator"></div>
+            
+            <!-- Question in separate container -->
             <div class="question-line">
-                <button id="submit">שלח</button>
-                <input type="number" id="answer" placeholder="?" inputmode="numeric" pattern="[0-9]*" min="0" max="999" />
-                <span class="equals">=</span>
                 <div id="question"></div>
             </div>
+            
+            <!-- Answer in separate container -->
+            <div class="answer-line">
+                <button id="submit">שלח</button>
+                <input type="number" id="answer" placeholder="?" inputmode="numeric" pattern="[0-9]*" min="0" max="999" />
+            </div>
+            
             <div id="feedback"></div>
             
             <!-- Progress Table -->
