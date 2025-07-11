@@ -181,6 +181,8 @@ body {
     gap: 20px;
     direction: rtl;
     width: 100%;
+    flex-wrap: nowrap; /* מונע שבירת שורה */
+    min-height: 60px;
 }
 
 #answer {
@@ -214,6 +216,16 @@ body {
         transform-origin: center;
         /* Ensure the input can receive focus */
         pointer-events: auto;
+    }
+    
+    /* Force horizontal layout on iOS */
+    .answer-line,
+    #answer-form {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
 }
 
@@ -738,10 +750,21 @@ body {
     .answer-line {
         margin: 15px auto 25px auto;
         gap: 15px;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
     
     #answer-form {
         gap: 15px;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 100% !important;
     }
     
     #answer {
@@ -1090,5 +1113,53 @@ body {
     .welcome-container, .game-container {
         box-shadow: none;
         border: 1px solid #ddd;
+    }
+}
+
+/* iPhone specific layout fixes */
+@media only screen 
+    and (device-width: 393px) 
+    and (device-height: 852px) 
+    and (-webkit-device-pixel-ratio: 3) {
+    /* iPhone 15/14/13 Pro specific */
+    .answer-line {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+    
+    #answer-form {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+}
+
+/* General iOS device layout fix */
+@media only screen and (max-width: 430px) and (-webkit-min-device-pixel-ratio: 2) {
+    .answer-line,
+    #answer-form {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex-wrap: nowrap !important;
+        min-height: 60px !important;
+    }
+    
+    #answer {
+        flex-shrink: 0 !important;
+        order: 2 !important; /* תמיד יהיה אחרי הכפתור */
+    }
+    
+    #submit {
+        flex-shrink: 0 !important;
+        order: 1 !important; /* תמיד יהיה לפני השדה */
     }
 }
