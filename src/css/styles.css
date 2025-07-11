@@ -1166,47 +1166,49 @@ body {
 
 /* Visitor Counter Styles */
 .visitor-counter {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     font-size: 14px;
     text-align: center;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
     direction: rtl;
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    padding: 0;
-    margin: 0;
+    height: auto;
+    min-height: 80px;
+    padding: 8px 0;
+    margin: 20px 0 0 0;
 }
 
 .counter-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 15px;
+    gap: 8px;
     max-width: 1200px;
     padding: 0 20px;
-    flex-wrap: wrap;
+    flex-direction: column;
     height: 100%;
 }
 
 .counter-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
     line-height: 1.2;
+    padding: 4px 0;
+    width: 100%;
+    justify-content: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.counter-item:last-child {
+    border-bottom: none;
 }
 
 .counter-separator {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 16px;
-    font-weight: bold;
+    display: none;
 }
 
 .counter-icon {
@@ -1296,7 +1298,7 @@ body {
 
 /* Add bottom padding to body to account for fixed footer */
 body {
-    padding-bottom: 50px;
+    padding-bottom: 20px;
 }
 
 /* Tablet responsive for visitor counter */
@@ -1321,27 +1323,35 @@ body {
 /* Mobile responsive for visitor counter */
 @media (max-width: 575px) {
     .visitor-counter {
-        font-size: 10px;
+        font-size: 11px;
         height: auto;
-        min-height: 60px;
+        min-height: 80px;
         padding: 8px 0;
     }
     
     .counter-container {
         padding: 0 10px;
-        gap: 8px;
+        gap: 6px;
         flex-direction: column;
         justify-content: center;
-        align-items: stretch;
+        align-items: center;
     }
     
     .counter-item {
-        gap: 4px;
+        gap: 6px;
         text-align: center;
         line-height: 1.2;
         justify-content: center;
-        padding: 2px 0;
-        flex-wrap: wrap;
+        padding: 4px 0;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .counter-item:last-child {
+        border-bottom: none;
     }
     
     .counter-separator {
@@ -1352,6 +1362,7 @@ body {
         font-size: 10px;
         line-height: 1.2;
         text-align: center;
+        flex: 1;
     }
     
     .counter-text-full {
@@ -1363,47 +1374,52 @@ body {
     }
     
     .counter-icon {
-        font-size: 12px;
+        font-size: 14px;
+        min-width: 20px;
     }
     
     .counter-number {
         font-size: 12px;
         font-weight: bold;
+        min-width: 30px;
+        text-align: center;
     }
     
     .reset-btn {
         font-size: 10px;
-        margin-left: 3px;
+        margin-left: 4px;
+        min-width: 20px;
     }
     
     body {
-        padding-bottom: 70px;
+        padding-bottom: 20px;
     }
 }
 
 /* Extra small screens (very small phones) */
 @media (max-width: 360px) {
     .visitor-counter {
-        font-size: 9px;
+        font-size: 10px;
         height: auto;
-        min-height: 75px;
-        padding: 5px 0;
+        min-height: 90px;
+        padding: 6px 0;
     }
     
     .counter-container {
-        padding: 0 5px;
-        gap: 6px;
+        padding: 0 8px;
+        gap: 4px;
+        flex-direction: column;
     }
     
     .counter-item {
-        gap: 3px;
+        gap: 4px;
         padding: 3px 0;
+        flex-direction: row;
     }
     
     .counter-text {
         font-size: 9px;
-        max-width: 100%;
-        word-wrap: break-word;
+        flex: 1;
     }
     
     .counter-text-full {
@@ -1415,20 +1431,23 @@ body {
     }
     
     .counter-icon {
-        font-size: 10px;
+        font-size: 12px;
+        min-width: 18px;
     }
     
     .counter-number {
         font-size: 10px;
+        min-width: 25px;
     }
     
     .reset-btn {
         font-size: 8px;
-        padding: 1px;
-        margin-left: 2px;
+        padding: 1px 2px;
+        margin-left: 3px;
+        min-width: 18px;
     }
     
     body {
-        padding-bottom: 80px;
+        padding-bottom: 20px;
     }
 }
