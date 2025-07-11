@@ -73,63 +73,23 @@
         // Function to increment global exercise counter
         function incrementExerciseCount() {
             console.log('incrementExerciseCount called - attempting to increment global counter');
-            
             try {
-                // Method 1: Create a hidden iframe that simulates a new visit
+                // Create a hidden iframe to trigger the counter increment
                 const iframe = document.createElement('iframe');
                 iframe.style.display = 'none';
-                iframe.style.width = '1px';
-                iframe.style.height = '1px';
-                iframe.style.position = 'absolute';
-                iframe.style.left = '-9999px';
-                iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3?' + Date.now();
-                
+                iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3';
                 document.body.appendChild(iframe);
                 
-                iframe.onload = function() {
-                    console.log('Counter iframe loaded - increment should have happened');
-                    // Try to refresh the displayed counter after increment
-                    setTimeout(() => {
-                        refreshExerciseCounterDisplay();
-                    }, 1000);
-                };
-                
-                // Remove iframe after timeout
+                // Remove iframe after 2 seconds
                 setTimeout(() => {
                     if (iframe.parentNode) {
                         iframe.parentNode.removeChild(iframe);
                     }
-                }, 5000);
+                }, 2000);
                 
-                console.log('Global exercise counter increment attempted via iframe');
-                
+                console.log('Global exercise counter incremented');
             } catch (error) {
                 console.error('Failed to increment global exercise counter:', error);
-            }
-        }
-        
-        // Function to refresh the exercise counter display
-        function refreshExerciseCounterDisplay() {
-            try {
-                // Find the counter container and reload the script
-                const counterContainer = document.querySelector('.counter-item:nth-child(3) .counter-number');
-                if (counterContainer) {
-                    // Remove old script
-                    const oldScript = counterContainer.querySelector('script');
-                    if (oldScript) {
-                        oldScript.remove();
-                    }
-                    
-                    // Add new script with cache-busting parameter
-                    const newScript = document.createElement('script');
-                    newScript.type = 'text/javascript';
-                    newScript.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3?' + Date.now();
-                    counterContainer.appendChild(newScript);
-                    
-                    console.log('Exercise counter display refreshed');
-                }
-            } catch (error) {
-                console.error('Failed to refresh counter display:', error);
             }
         }
     </script>
