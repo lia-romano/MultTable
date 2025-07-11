@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Layout</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            direction: rtl;
+        }
+        
+        .game-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .question-line {
+            display: block;
+            width: 100%;
+            margin: 20px 0;
+            padding: 30px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            border: 3px solid #667eea;
+            text-align: center;
+        }
+
+        #question {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #333;
+            display: block;
+        }
+
+        .answer-line {
+            display: flex;
+            width: 100%;
+            margin: 20px 0;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            direction: rtl;
+        }
+
+        #answer {
+            width: 120px;
+            height: 60px;
+            padding: 15px;
+            font-size: 2.5rem;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            direction: ltr;
+            background-color: #fff;
+        }
+
+        #submit {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            height: 60px;
+            min-width: 80px;
+        }
+        
+        .debug {
+            background: yellow;
+            border: 2px solid red;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Debug Layout Test</h1>
+        
+        <div class="debug">
+            <p>This should be above the question</p>
+        </div>
+        
+        <div class="question-line debug">
+            <div id="question">3 × 4</div>
+        </div>
+        
+        <div class="debug">
+            <p>This should be between question and answer</p>
+        </div>
+        
+        <div class="answer-line debug">
+            <input type="number" id="answer" placeholder="?" />
+            <button id="submit">שלח</button>
+        </div>
+        
+        <div class="debug">
+            <p>This should be below the answer</p>
+        </div>
+        
+        <script>
+            // Simulate game loading
+            setTimeout(() => {
+                document.getElementById('question').textContent = '5 × 7';
+            }, 1000);
+        </script>
+    </div>
+</body>
+</html>

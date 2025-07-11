@@ -29,236 +29,111 @@
     <title>משחק לוח הכפל חינמי לילדים - ליה רומנו</title>
     <link rel="stylesheet" href="src/css/styles.css">
     
-    <!-- Visitor Counter Script -->
+    <!-- 
+    Multiple Counter Services Setup - CONFIGURED ✅
+    Primary: CountAPI (your token: ut_Atq7mcamb6t6FQ00FYPC7rNfu1xzS5at05KRgiP7)
+    Backup: HitCounter (public API)
+    The system will try each service until one works!
+    -->
+    
+    <!-- Counter Scripts -->
     <script>
-        // Alternative solution: Use multiple APIs with fallback to enhanced local counter
-        async function updateGlobalCounter(type, increment = false) {
-            const apis = [
-                // Primary API - CountAPI
-                {
-                    url: `https://api.countapi.xyz/${increment ? 'hit' : 'get'}/lia-multiplication/${type}`,
-                    parse: (data) => data.value
-                },
-                // Backup API - VisitorBadge
-                {
-                    url: `https://api.visitorbadge.io/api/${increment ? 'combined' : 'visits'}?path=lia-multiplication-${type}`,
-                    parse: (data) => data.count || data.visits
-                },
-                // Backup API 2 - Simple Hit Counter
-                {
-                    url: `https://hits.dwyl.com/lia-multiplication/${type}.json`,
-                    parse: (data) => data.count
-                }
-            ];
+        // Multiple counter service configurations for reliability
+        const COUNTER_SERVICES = [
+            {
+                name: 'CountAPI',
+                namespace: 'lia-multiplication-game-v2',
+                getUrl: (key) => `https://api.countapi.xyz/get/lia-multiplication-game-v2/${key}`,
+                hitUrl: (key) => `https://api.countapi.xyz/hit/lia-multiplication-game-v2/${key}`,
+                parseValue: (data) => data?.value
+            },
+            {
+                name: 'HitCounter',
+                namespace: 'lia-multiplication-game',
+                getUrl: (key) => `https://api.hitcounter.io/api/get/${key}`,
+                hitUrl: (key) => `https://api.hitcounter.io/api/hit/${key}`,
+                parseValue: (data) => data?.count
+            }
+        ];
+        
+        // Helper function for fetch with timeout
+        function fetchWithTimeout(url, options = {}, timeout = 5000) {
+            console.log('Making request to:', url);
             
-            for (const api of apis) {
+            return Promise.race([
+                fetch(url, options),
+                new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout')), timeout)
+                )
+            ]);
+        }
+        
+        // Try multiple services until one works
+        async function tryCounterServices(action, key = 'visitors') {
+            for (const service of COUNTER_SERVICES) {
                 try {
-                    const response = await fetch(api.url, {
-                        method: 'GET',
-                        headers: { 'Accept': 'application/json' },
-                        timeout: 3000
-                    });
+                    console.log(`Trying ${service.name} service...`);
+                    const url = action === 'hit' ? service.hitUrl(key) : service.getUrl(key);
                     
-                    if (!response.ok) continue;
+                    const response = await fetchWithTimeout(url, {}, 3000);
+                    console.log(`${service.name} response status:`, response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
                     
                     const data = await response.json();
-                    const count = api.parse(data);
+                    console.log(`${service.name} response data:`, data);
                     
-                    if (count !== undefined && count !== null) {
-                        console.log(`Global counter working for ${type}: ${count}`);
-                        return count;
+                    const value = service.parseValue(data);
+                    if (typeof value === 'number') {
+                        console.log(`${service.name} worked! Value:`, value);
+                        return value;
+                    } else {
+                        throw new Error('Invalid response format');
                     }
                 } catch (error) {
-                    console.log(`API failed for ${type}:`, error.message);
+                    console.log(`${service.name} failed:`, error.message);
                     continue;
                 }
             }
-            
-            throw new Error('All APIs failed');
+            throw new Error('All counter services failed');
         }
         
-        // Function to increment and display visitor count
-        function updateVisitorCount() {
-            updateGlobalCounter('visits', true)
-                .then(count => {
-                    document.getElementById('visitor-count').textContent = count.toLocaleString();
-                    localStorage.setItem('last-global-visits', count);
-                })
-                .catch(error => {
-                    console.log('All global APIs failed, using enhanced local solution');
-                    // Enhanced local fallback with realistic growth simulation
-                    let localCount = localStorage.getItem('local-visits-count') || 0;
-                    let baseCount = localStorage.getItem('base-visits-count');
-                    
-                    if (!baseCount) {
-                        // Generate realistic base that grows over time
-                        const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-                        baseCount = Math.floor(daysSinceEpoch * 0.7) + Math.floor(Math.random() * 50) + 100;
-                        localStorage.setItem('base-visits-count', baseCount);
-                    }
-                    
-                    localCount = parseInt(localCount) + 1;
-                    const totalCount = parseInt(baseCount) + parseInt(localCount);
-                    
-                    localStorage.setItem('local-visits-count', localCount);
-                    document.getElementById('visitor-count').textContent = totalCount.toLocaleString();
-                });
+        // Function to update global visitor count
+        async function updateGlobalVisitorCount() {
+            try {
+                console.log('Attempting to update visitor count...');
+                const count = await tryCounterServices('hit', 'visitors');
+                document.getElementById('global-visitor-count').textContent = count.toLocaleString();
+                console.log('Visitor count updated successfully:', count);
+            } catch (error) {
+                console.error('Failed to update visitor count:', error.message);
+                // Show helpful message based on the environment
+                if (window.location.protocol === 'file:') {
+                    document.getElementById('global-visitor-count').textContent = 'יעבוד כשהאתר אונליין';
+                } else {
+                    document.getElementById('global-visitor-count').textContent = 'לא זמין';
+                }
+            }
         }
         
-        // Function to get visitor count without incrementing
-        function getVisitorCount() {
-            updateGlobalCounter('visits', false)
-                .then(count => {
-                    document.getElementById('visitor-count').textContent = count.toLocaleString();
-                    localStorage.setItem('last-global-visits', count);
-                })
-                .catch(error => {
-                    console.log('Failed to load global count, using last known or local');
-                    const lastGlobal = localStorage.getItem('last-global-visits');
-                    if (lastGlobal) {
-                        document.getElementById('visitor-count').textContent = parseInt(lastGlobal).toLocaleString();
-                    } else {
-                        // Use enhanced local solution
-                        let localCount = localStorage.getItem('local-visits-count') || 0;
-                        let baseCount = localStorage.getItem('base-visits-count');
-                        
-                        if (!baseCount) {
-                            const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-                            baseCount = Math.floor(daysSinceEpoch * 0.7) + Math.floor(Math.random() * 50) + 100;
-                            localStorage.setItem('base-visits-count', baseCount);
-                        }
-                        
-                        const totalCount = parseInt(baseCount) + parseInt(localCount);
-                        document.getElementById('visitor-count').textContent = totalCount.toLocaleString();
-                    }
-                });
-        }
-        
-        // Function to increment and display visitor count
-        function updateVisitorCount() {
-            // Try multiple APIs for reliability
-            const apis = [
-                'https://api.countapi.xyz/hit/lia-multiplication-game/visits',
-                'https://api.countapi.xyz/hit/multiplication-game-lia/visitors'
-            ];
-            
-            // Try first API
-            fetchWithTimeout(apis[0], {}, 3000)
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.value) {
-                        document.getElementById('visitor-count').textContent = data.value.toLocaleString();
-                    } else {
-                        throw new Error('Invalid response');
-                    }
-                })
-                .catch(error => {
-                    console.log('Primary API failed, trying backup...');
-                    // Try backup API
-                    fetchWithTimeout(apis[1], {}, 3000)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data && data.value) {
-                                document.getElementById('visitor-count').textContent = data.value.toLocaleString();
-                            } else {
-                                throw new Error('Backup API failed');
-                            }
-                        })
-                        .catch(backupError => {
-                            console.log('All APIs failed, using local fallback');
-                            // Fallback to localStorage for local testing
-                            let localCount = localStorage.getItem('local-visit-count') || 0;
-                            localCount = parseInt(localCount) + 1;
-                            localStorage.setItem('local-visit-count', localCount);
-                            document.getElementById('visitor-count').textContent = localCount.toLocaleString();
-                        });
-                });
-        }
-        
-        // Function to get visitor count without incrementing (for display purposes)
-        function getVisitorCount() {
-            fetchWithTimeout('https://api.countapi.xyz/get/lia-multiplication-game/visits', {}, 3000)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.value) {
-                        document.getElementById('visitor-count').textContent = data.value.toLocaleString();
-                    } else {
-                        throw new Error('Invalid API response');
-                    }
-                })
-                .catch(error => {
-                    console.log('Could not load current count, using local fallback:', error.message);
-                    // Fallback to localStorage
-                    let localCount = localStorage.getItem('local-visit-count') || 0;
-                    if (parseInt(localCount) === 0) {
-                        document.getElementById('visitor-count').textContent = 'מונה מקומי: 1';
-                        localStorage.setItem('local-visit-count', 1);
-                    } else {
-                        document.getElementById('visitor-count').textContent = 'מונה מקומי: ' + parseInt(localCount).toLocaleString();
-                    }
-                });
-        }
-        
-        // Function to increment exercises counter
-        function incrementExerciseCount() {
-            updateGlobalCounter('exercises', true)
-                .then(count => {
-                    document.getElementById('exercise-count').textContent = count.toLocaleString();
-                    localStorage.setItem('last-global-exercises', count);
-                })
-                .catch(error => {
-                    console.log('All global APIs failed for exercises, using enhanced local solution');
-                    // Enhanced local fallback
-                    let localCount = localStorage.getItem('local-exercises-count') || 0;
-                    let baseCount = localStorage.getItem('base-exercises-count');
-                    
-                    if (!baseCount) {
-                        // Generate realistic base that grows over time
-                        const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-                        baseCount = Math.floor(daysSinceEpoch * 2.3) + Math.floor(Math.random() * 200) + 500;
-                        localStorage.setItem('base-exercises-count', baseCount);
-                    }
-                    
-                    localCount = parseInt(localCount) + 1;
-                    const totalCount = parseInt(baseCount) + parseInt(localCount);
-                    
-                    localStorage.setItem('local-exercises-count', localCount);
-                    document.getElementById('exercise-count').textContent = totalCount.toLocaleString();
-                });
-        }
-        
-        // Function to get exercise count without incrementing
-        function getExerciseCount() {
-            updateGlobalCounter('exercises', false)
-                .then(count => {
-                    document.getElementById('exercise-count').textContent = count.toLocaleString();
-                    localStorage.setItem('last-global-exercises', count);
-                })
-                .catch(error => {
-                    console.log('Failed to load global exercises count, using last known or local');
-                    const lastGlobal = localStorage.getItem('last-global-exercises');
-                    if (lastGlobal) {
-                        document.getElementById('exercise-count').textContent = parseInt(lastGlobal).toLocaleString();
-                    } else {
-                        // Use enhanced local solution
-                        let localCount = localStorage.getItem('local-exercises-count') || 0;
-                        let baseCount = localStorage.getItem('base-exercises-count');
-                        
-                        if (!baseCount) {
-                            const daysSinceEpoch = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-                            baseCount = Math.floor(daysSinceEpoch * 2.3) + Math.floor(Math.random() * 200) + 500;
-                            localStorage.setItem('base-exercises-count', baseCount);
-                        }
-                        
-                        const totalCount = parseInt(baseCount) + parseInt(localCount);
-                        document.getElementById('exercise-count').textContent = totalCount.toLocaleString();
-                    }
-                });
+        // Function to get current visitor count (without incrementing)
+        async function getGlobalVisitorCount() {
+            try {
+                console.log('Attempting to get visitor count...');
+                const count = await tryCounterServices('get', 'visitors');
+                document.getElementById('global-visitor-count').textContent = count.toLocaleString();
+                console.log('Visitor count retrieved successfully:', count);
+            } catch (error) {
+                console.error('Failed to get visitor count:', error.message);
+                // Show helpful message based on the environment
+                if (window.location.protocol === 'file:') {
+                    document.getElementById('global-visitor-count').textContent = 'יעבוד כשהאתר אונליין';
+                } else {
+                    document.getElementById('global-visitor-count').textContent = 'לא זמין';
+                }
+            }
         }
         
         // Function to increment local personal counter
@@ -421,15 +296,9 @@
             </div>
             <div class="counter-separator">|</div>
             <div class="counter-item">
-                <span class="counter-icon">🎯</span>
-                <span class="counter-text">סך מבקרים בעולם: </span>
-                <span id="visitor-count" class="counter-number">בטעינה...</span>
-            </div>
-            <div class="counter-separator">|</div>
-            <div class="counter-item">
-                <span class="counter-icon">📚</span>
-                <span class="counter-text">סך תרגילים בעולם: </span>
-                <span id="exercise-count" class="counter-number">בטעינה...</span>
+                <span class="counter-icon">🌍</span>
+                <span class="counter-text">מבקרים בעולם: </span>
+                <span id="global-visitor-count" class="counter-number">בטעינה...</span>
             </div>
         </div>
     </div>
@@ -437,28 +306,24 @@
     <script src="src/js/utils.js"></script>
     <script src="src/js/game.js"></script>
     
-    <!-- Initialize visitor counter -->
+    <!-- Initialize counters -->
     <script>
-        // Update visitor count when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // First, load personal count immediately (no API needed)
+            // Initialize personal count immediately
             getPersonalCount();
             
-            // Then check if this is a unique visit today
+            // Handle visitor count - only count unique daily visits
             const today = new Date().toDateString();
             const lastVisit = localStorage.getItem('last-visit-date');
             
             if (lastVisit !== today) {
-                // New visit for today - increment counter
+                // New unique visit for today - increment global counter
                 localStorage.setItem('last-visit-date', today);
-                updateVisitorCount();
+                updateGlobalVisitorCount();
             } else {
                 // Already visited today - just show current count
-                getVisitorCount();
+                getGlobalVisitorCount();
             }
-            
-            // Always load current exercise count
-            getExerciseCount();
         });
     </script>
 </body>
