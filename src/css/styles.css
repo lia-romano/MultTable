@@ -1172,12 +1172,17 @@ body {
     right: 0;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 8px 0;
     font-size: 14px;
     text-align: center;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     direction: rtl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0;
+    margin: 0;
 }
 
 .counter-container {
@@ -1186,15 +1191,16 @@ body {
     align-items: center;
     gap: 15px;
     max-width: 1200px;
-    margin: 0 auto;
     padding: 0 20px;
     flex-wrap: wrap;
+    height: 100%;
 }
 
 .counter-item {
     display: flex;
     align-items: center;
     gap: 5px;
+    line-height: 1.2;
 }
 
 .counter-separator {
@@ -1205,10 +1211,12 @@ body {
 
 .counter-icon {
     font-size: 16px;
+    line-height: 1;
 }
 
 .counter-text {
     font-weight: normal;
+    line-height: 1.2;
 }
 
 .counter-number {
@@ -1217,6 +1225,9 @@ body {
     font-size: 15px;
     transition: all 0.3s ease;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    line-height: 1.2;
+    display: inline-flex;
+    align-items: center;
 }
 
 .counter-number.personal {
@@ -1237,6 +1248,11 @@ body {
     cursor: pointer;
     margin-left: 5px;
     padding: 2px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20px;
     border-radius: 3px;
     transition: all 0.3s ease;
 }
@@ -1286,18 +1302,20 @@ body {
 @media (max-width: 575px) {
     .visitor-counter {
         font-size: 10px;
-        padding: 4px 0;
+        height: 50px;
     }
     
     .counter-container {
         padding: 0 5px;
         gap: 6px;
         flex-direction: column;
+        justify-content: center;
     }
     
     .counter-item {
         gap: 3px;
         text-align: center;
+        line-height: 1.1;
     }
     
     .counter-separator {

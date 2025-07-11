@@ -140,6 +140,7 @@ function displayQuestion() {
 }
 
 function checkAnswer() {
+    console.log('checkAnswer called - user submitted an answer');
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = questions[currentQuestionIndex].answer;
     const feedbackElement = document.getElementById('feedback');

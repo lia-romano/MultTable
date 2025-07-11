@@ -32,10 +32,14 @@
     <!-- Free Visitor Counter Authentication -->
     <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=087cf5f08780087996505f0b88ba2a5b9e414ea5'></script>
     
+    <!-- Free Exercise Counter Authentication -->
+    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=83715a2c1665a94f88033c31314a70d4592a700b'></script>
+    
     <!-- 
-    Free Visitor Counter Integration ✅
-    Using freevisitorcounters.com for global visitor counter
-    Counter ID: 1363236
+    Free Counter Integration ✅
+    Using freevisitorcounters.com for global counters:
+    - Visitor Counter ID: 1363236 (auto-increments on page load)
+    - Exercise Counter ID: 1363237 (manually incremented on correct answers)
     -->
     
     <!-- Counter Scripts -->
@@ -63,6 +67,32 @@
                 localStorage.setItem('personal-exercise-count', 0);
                 document.getElementById('personal-count').textContent = '0';
                 alert('המונה האישי אופס בהצלחה!');
+            }
+        }
+        
+        // Function to increment global exercise counter
+        function incrementExerciseCount() {
+            console.log('incrementExerciseCount called - attempting to increment global counter');
+            // This function increments the global exercise counter
+            // The counter is handled by freevisitorcounters.com automatically
+            // when the page with counter ID 1363237 is loaded
+            try {
+                // Create a hidden iframe to trigger the counter increment
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3';
+                document.body.appendChild(iframe);
+                
+                // Remove iframe after 2 seconds
+                setTimeout(() => {
+                    if (iframe.parentNode) {
+                        iframe.parentNode.removeChild(iframe);
+                    }
+                }, 2000);
+                
+                console.log('Global exercise counter incremented - iframe created and will be removed');
+            } catch (error) {
+                console.error('Failed to increment global exercise counter:', error);
             }
         }
     </script>
@@ -198,6 +228,14 @@
                 <span class="counter-text">התרגילים שלי (במכשיר זה): </span>
                 <span id="personal-count" class="counter-number personal">0</span>
                 <button id="reset-personal" class="reset-btn" onclick="resetPersonalCount()" title="איפוס מונה אישי">🔄</button>
+            </div>
+            <div class="counter-separator">|</div>
+            <div class="counter-item">
+                <span class="counter-icon">📚</span>
+                <span class="counter-text">תרגילים בעולם: </span>
+                <span class="counter-number">
+                    <script type="text/javascript" src="https://freevisitorcounters.com/en/home/counter/1363237/t/3"></script>
+                </span>
             </div>
             <div class="counter-separator">|</div>
             <div class="counter-item">
