@@ -1,7 +1,5 @@
 # משחק לוח הכפל חינמי לילדים - Multiplication Game
 
-![Visitors](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/lia-romano/MultTable/visitor-counter/badge.json)
-
 משחק אינטרקטיבי וחינמי ללימוד לוח הכפל לילדים בעברית, פותח על ידי ליה רומנו.
 
 ## תכונות
@@ -12,6 +10,8 @@
 - עיצוב ריספונסיבי לכל המכשירים (iPhone, Android, Desktop)
 - תמיכה בעברית מלאה
 - אופטימיזציה למנועי חיפוש (SEO)
+- מונה מבקרים גלובלי (freevisitorcounters.com)
+- מונה אישי מקומי
 - משחק חינמי לחלוטין
 
 ## רמות קושי

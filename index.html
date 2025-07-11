@@ -29,95 +29,17 @@
     <title>משחק לוח הכפל חינמי לילדים - ליה רומנו</title>
     <link rel="stylesheet" href="src/css/styles.css">
     
+    <!-- Free Visitor Counter Authentication -->
+    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=087cf5f08780087996505f0b88ba2a5b9e414ea5'></script>
+    
     <!-- 
-    Shields.io Visitor Counter Integration ✅
-    Uses shields.io visitor counter (ESKYoung/shields-io-visitor-counter)
-    Repository: lia-romano/MultTable
-    Falls back to "שירות לא זמין" if unavailable
+    Free Visitor Counter Integration ✅
+    Using freevisitorcounters.com for global visitor counter
+    Counter ID: 1363236
     -->
     
     <!-- Counter Scripts -->
     <script>
-        
-        // Helper function for fetch with timeout
-        function fetchWithTimeout(url, options = {}, timeout = 5000) {
-            console.log('Making request to:', url);
-            
-            return Promise.race([
-                fetch(url, options),
-                new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout')), timeout)
-                )
-            ]);
-        }
-        
-        // Function to get visitor count from shields.io
-        async function getShieldsVisitorCount() {
-            try {
-                // Use the visitor counter endpoint from your repository
-                const url = `https://raw.githubusercontent.com/lia-romano/MultTable/visitor-counter/badge.json`;
-                
-                console.log('Attempting to get visitor count from shields.io visitor counter...');
-                const response = await fetchWithTimeout(url, {}, 3000);
-                
-                console.log('Response status:', response.status);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                // Get the JSON response
-                const badgeData = await response.json();
-                console.log('Badge data received:', badgeData);
-                
-                // Extract the visitor count from the message field
-                const message = badgeData.message;
-                if (message && message !== 'loading...') {
-                    const count = parseInt(message.replace(/[^\d]/g, ''));
-                    if (!isNaN(count)) {
-                        console.log('Extracted count:', count);
-                        return count;
-                    }
-                }
-                
-                throw new Error('Could not extract valid count from badge data');
-                
-            } catch (error) {
-                console.error('Shields.io visitor counter failed:', error.message);
-                throw error;
-            }
-        }
-
-        
-        // Function to update global visitor count
-        async function updateGlobalVisitorCount() {
-            console.log('Attempting to update visitor count...');
-            
-            try {
-                // Try shields.io visitor counter
-                const count = await getShieldsVisitorCount();
-                document.getElementById('global-visitor-count').textContent = count.toLocaleString();
-                console.log('Shields.io visitor count updated successfully:', count);
-            } catch (shieldsError) {
-                console.error('Shields.io visitor counter failed:', shieldsError.message);
-                document.getElementById('global-visitor-count').textContent = 'שירות לא זמין';
-            }
-        }
-        
-        // Function to get current visitor count (without incrementing)
-        async function getGlobalVisitorCount() {
-            console.log('Attempting to get visitor count...');
-            
-            try {
-                // Try shields.io visitor counter
-                const count = await getShieldsVisitorCount();
-                document.getElementById('global-visitor-count').textContent = count.toLocaleString();
-                console.log('Shields.io visitor count retrieved successfully:', count);
-            } catch (shieldsError) {
-                console.error('Shields.io visitor counter failed:', shieldsError.message);
-                document.getElementById('global-visitor-count').textContent = 'שירות לא זמין';
-            }
-        }
         
         // Function to increment local personal counter
         function incrementPersonalCount() {
@@ -281,7 +203,9 @@
             <div class="counter-item">
                 <span class="counter-icon">🌍</span>
                 <span class="counter-text">מבקרים בעולם: </span>
-                <span id="global-visitor-count" class="counter-number">בטעינה...</span>
+                <span class="counter-number">
+                    <script type="text/javascript" src="https://freevisitorcounters.com/en/home/counter/1363236/t/3"></script>
+                </span>
             </div>
         </div>
     </div>
@@ -295,18 +219,8 @@
             // Initialize personal count immediately
             getPersonalCount();
             
-            // Handle visitor count - only count unique daily visits
-            const today = new Date().toDateString();
-            const lastVisit = localStorage.getItem('last-visit-date');
-            
-            if (lastVisit !== today) {
-                // New unique visit for today - increment global counter
-                localStorage.setItem('last-visit-date', today);
-                updateGlobalVisitorCount();
-            } else {
-                // Already visited today - just show current count
-                getGlobalVisitorCount();
-            }
+            // Global visitor counter is handled automatically by freevisitorcounters.com
+            // No manual initialization needed
         });
     </script>
 </body>
