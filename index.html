@@ -29,17 +29,11 @@
     <title>משחק לוח הכפל חינמי לילדים - ליה רומנו</title>
     <link rel="stylesheet" href="src/css/styles.css">
     
-    <!-- Free Visitor Counter Authentication -->
-    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=087cf5f08780087996505f0b88ba2a5b9e414ea5'></script>
-    
-    <!-- Free Exercise Counter Authentication -->
-    <script type='text/javascript' src='https://www.freevisitorcounters.com/auth.php?id=83715a2c1665a94f88033c31314a70d4592a700b'></script>
-    
     <!-- 
-    Free Counter Integration ✅
-    Using freevisitorcounters.com for global counters:
-    - Visitor Counter ID: 1363236 (auto-increments on page load)
-    - Exercise Counter ID: 1363237 (manually incremented on correct answers)
+    HitWebCounter Integration ✅
+    Using hitwebcounter.com for global counters:
+    - Visitor Counter: page=21131245 (auto-increments on page load)
+    - Exercise Counter: page=21131251 (manually incremented on exercises)
     -->
     
     <!-- Counter Scripts -->
@@ -75,27 +69,26 @@
         
         // Function to increment global exercise counter
         function incrementExerciseCount() {
-            console.log('incrementExerciseCount called - attempting to increment global counter');
+            console.log('incrementExerciseCount called');
             
             // Increment session counter and update display immediately
             sessionExerciseCount++;
             updateSessionCounterDisplay();
             
+            // Increment global exercise counter via hitwebcounter
             try {
-                // Create a hidden iframe to trigger the counter increment
-                const iframe = document.createElement('iframe');
-                iframe.style.display = 'none';
-                iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3';
-                document.body.appendChild(iframe);
+                const img = new Image();
+                img.src = 'https://hitwebcounter.com/counter/counter.php?page=21131251&style=0001&nbdigits=5&type=page&initCount=0&' + Date.now();
+                img.style.display = 'none';
+                document.body.appendChild(img);
+                console.log('Global exercise counter increment attempted via hitwebcounter');
                 
-                // Remove iframe after 3 seconds
+                // Remove the image after 3 seconds
                 setTimeout(() => {
-                    if (iframe.parentNode) {
-                        iframe.parentNode.removeChild(iframe);
+                    if (img.parentNode) {
+                        img.parentNode.removeChild(img);
                     }
                 }, 3000);
-                
-                console.log('Global exercise counter increment attempted');
             } catch (error) {
                 console.error('Failed to increment global exercise counter:', error);
             }
@@ -260,28 +253,22 @@
                 </span>
                 <span id="session-count" class="counter-number session">0</span>
             </div>
-            <div class="counter-separator">|</div>
-            <div class="counter-item">
-                <span class="counter-icon">📚</span>
-                <span class="counter-text">
-                    <span class="counter-text-full">תרגילים בעולם: </span>
-                    <span class="counter-text-short">תרגילים בעולם</span>
-                </span>
-                <span id="exercise-counter-container" class="counter-number">
-                    <script type="text/javascript" src="https://freevisitorcounters.com/en/home/counter/1363237/t/3"></script>
-                </span>
-            </div>
-            <div class="counter-separator">|</div>
-            <div class="counter-item">
-                <span class="counter-icon">🌍</span>
-                <span class="counter-text">
-                    <span class="counter-text-full">מבקרים בעולם: </span>
-                    <span class="counter-text-short">מבקרים</span>
-                </span>
-                <span class="counter-number">
-                    <script type="text/javascript" src="https://freevisitorcounters.com/en/home/counter/1363236/t/3"></script>
-                </span>
-            </div>
+        </div>
+    </div>
+    
+    <!-- Global Counters in simple layout -->
+    <div class="global-counters">
+        <div class="global-counter-item">
+            <span>📚 תרגילים בעולם: </span>
+            <a href="https://www.hitwebcounter.com" target="_blank">
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21131251&style=0001&nbdigits=5&type=page&initCount=0" title="Exercise Counter" Alt="Exercise Counter" border="0" />
+            </a>
+        </div>
+        <div class="global-counter-item">
+            <span>🌍 מבקרים בעולם: </span>
+            <a href="https://www.hitwebcounter.com" target="_blank">
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21131245&style=0001&nbdigits=5&type=page&initCount=0" title="Visitor Counter" Alt="Visitor Counter" border="0" />
+            </a>
         </div>
     </div>
     
@@ -296,9 +283,6 @@
             
             // Initialize session count
             updateSessionCounterDisplay();
-            
-            // Global visitor counter is handled automatically by freevisitorcounters.com
-            // No manual initialization needed
         });
     </script>
 </body>

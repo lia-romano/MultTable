@@ -1181,6 +1181,38 @@ body {
     margin: 20px 0 0 0;
 }
 
+/* Global Counters - Simple Layout */
+.global-counters {
+    background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+    color: white;
+    padding: 15px;
+    text-align: center;
+    direction: rtl;
+    margin: 10px 0;
+}
+
+.global-counter-item {
+    display: inline-block;
+    margin: 10px 20px;
+    font-size: 14px;
+    direction: rtl;
+}
+
+.global-counter-item span {
+    margin-left: 10px;
+}
+
+.global-counter-item a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.global-counter-item img {
+    vertical-align: middle;
+    margin-right: 5px;
+    border: none;
+}
+
 .counter-container {
     display: flex;
     justify-content: center;
