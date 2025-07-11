@@ -1,0 +1,20 @@
+{
+  "name": "multiplication-game",
+  "version": "1.0.0",
+  "description": "A game to help learn the multiplication table.",
+  "main": "src/index.html",
+  "scripts": {
+    "start": "live-server src"
+  },
+  "keywords": [
+    "multiplication",
+    "learning",
+    "game"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
