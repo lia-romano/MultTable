@@ -126,15 +126,28 @@ function displayQuestion() {
     answerInput.value = '';
     document.getElementById('submit').style.display = 'inline-block';
     
-    // Enhanced focus for mobile devices (iPhone)
+    // Enhanced focus for mobile devices
     setTimeout(() => {
         answerInput.focus();
-        // Force keyboard to appear on mobile
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        
+        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            // iOS specific handling
             answerInput.click();
             answerInput.focus();
+            // Additional iOS-specific handling
+            answerInput.setAttribute('readonly', false);
+            answerInput.removeAttribute('readonly');
+        } else if (/Android/i.test(navigator.userAgent)) {
+            // Android specific handling
+            answerInput.click();
+            answerInput.focus();
+            // Android usually responds better to these events
+            answerInput.dispatchEvent(new Event('touchstart', { bubbles: true }));
+        } else {
+            // Desktop
+            answerInput.focus();
         }
-    }, 100);
+    }, 150);
     
     // Update progress table to highlight current question
     updateProgressTable();
@@ -325,10 +338,37 @@ document.addEventListener('DOMContentLoaded', () => {
     const submitButton = document.getElementById('submit');
     const backButton = document.getElementById('back-to-menu');
 
-    submitButton.addEventListener('click', () => {
+    submitButton.addEventListener('click', (e) => {
+        e.preventDefault(); // Prevent default behavior that might close keyboard
         // Ensure audio is initialized on first interaction
         initAudio();
         checkAnswer();
+        
+        // Keep keyboard open on mobile devices
+        setTimeout(() => {
+            const answerInput = document.getElementById('answer');
+            if (answerInput) {
+                // Different approach for different mobile platforms
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // iOS specific handling
+                    answerInput.focus();
+                    answerInput.blur();
+                    setTimeout(() => answerInput.focus(), 50);
+                } else if (/Android/i.test(navigator.userAgent)) {
+                    // Android specific handling
+                    answerInput.focus();
+                    // Android usually handles focus better, but ensure it's maintained
+                    setTimeout(() => {
+                        if (document.activeElement !== answerInput) {
+                            answerInput.focus();
+                        }
+                    }, 100);
+                } else {
+                    // Desktop or other devices
+                    answerInput.focus();
+                }
+            }
+        }, 100);
     });
     
     backButton.addEventListener('click', backToMenu);
@@ -336,8 +376,30 @@ document.addEventListener('DOMContentLoaded', () => {
     // Allow Enter key to submit answer
     answerInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && submitButton.style.display !== 'none') {
+            e.preventDefault(); // Prevent form submission
             initAudio();
             checkAnswer();
+            
+            // Keep keyboard open after Enter
+            setTimeout(() => {
+                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // iOS specific handling
+                    answerInput.focus();
+                    answerInput.blur();
+                    setTimeout(() => answerInput.focus(), 50);
+                } else if (/Android/i.test(navigator.userAgent)) {
+                    // Android specific handling
+                    answerInput.focus();
+                    // On Android, sometimes we need to ensure the keyboard stays
+                    setTimeout(() => {
+                        if (document.activeElement !== answerInput) {
+                            answerInput.focus();
+                        }
+                    }, 100);
+                } else {
+                    answerInput.focus();
+                }
+            }, 100);
         }
     });
 

@@ -177,6 +177,34 @@ body {
     font-weight: bold;
     direction: ltr;
     background-color: #fff;
+    
+    /* Prevent zoom on iOS and keep keyboard visible */
+    -webkit-appearance: none;
+    appearance: none;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+/* Ensure keyboard stays visible on mobile */
+@supports (-webkit-touch-callout: none) {
+    /* iOS specific */
+    #answer {
+        font-size: 16px; /* Prevent zoom on iOS */
+        transform: scale(1.5625); /* Scale back to 2.5rem visual size */
+        transform-origin: center;
+    }
+}
+
+/* Android specific optimizations */
+@media screen and (-webkit-min-device-pixel-ratio: 1) and (max-device-width: 1024px) {
+    #answer {
+        /* Ensure minimum font size for Android to prevent zoom */
+        font-size: max(2.5rem, 16px);
+        /* Better touch handling on Android */
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+    }
 }
 
 #answer:focus {
