@@ -174,6 +174,15 @@ body {
     direction: rtl;
 }
 
+#answer-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    direction: rtl;
+    width: 100%;
+}
+
 #answer {
     width: 120px;
     height: 60px;
@@ -218,6 +227,7 @@ body {
         -webkit-tap-highlight-color: rgba(102, 126, 234, 0.2);
         /* Ensure proper keyboard behavior */
         -webkit-appearance: textfield;
+        appearance: textfield;
         appearance: textfield;
     }
 }
@@ -506,6 +516,16 @@ body {
     clear: both !important;
 }
 
+.game-container .answer-line #answer-form {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+    direction: rtl !important;
+    width: 100% !important;
+}
+
 .game-container .answer-line #answer {
     width: 120px !important;
     height: 60px !important;
@@ -583,6 +603,17 @@ body {
     align-items: center !important;
     gap: 20px !important;
     direction: rtl !important;
+}
+
+/* Form inside answer container */
+#game-screen .answer-line #answer-form {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+    direction: rtl !important;
+    width: 100% !important;
 }
 
 /* Answer input - ALWAYS in the flex container */
@@ -709,6 +740,10 @@ body {
         gap: 15px;
     }
     
+    #answer-form {
+        gap: 15px;
+    }
+    
     #answer {
         width: 100px;
         height: 50px;
@@ -816,6 +851,10 @@ body {
         gap: 12px;
     }
     
+    #answer-form {
+        gap: 12px;
+    }
+    
     #answer {
         width: 90px;
         height: 45px;
@@ -894,6 +933,10 @@ body {
     
     .answer-line {
         margin: 15px auto 25px auto;
+        gap: 15px;
+    }
+    
+    #answer-form {
         gap: 15px;
     }
     

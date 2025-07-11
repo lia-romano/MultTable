@@ -128,7 +128,11 @@ function displayQuestion() {
     
     // Enhanced focus for mobile devices
     setTimeout(() => {
-        keepInputFocused();
+        const answerInput = document.getElementById('answer');
+        if (answerInput) {
+            answerInput.focus();
+            answerInput.click(); // Trigger mobile keyboard
+        }
     }, 150);
     
     // Update progress table to highlight current question
@@ -139,12 +143,14 @@ function checkAnswer() {
     const userAnswer = parseInt(document.getElementById('answer').value);
     const correctAnswer = questions[currentQuestionIndex].answer;
     const feedbackElement = document.getElementById('feedback');
+    let delayTime = 2000; // Default delay for incorrect answers
     
     if (userAnswer === correctAnswer) {
         score++;
         feedbackElement.textContent = 'נכון! 🎉';
         feedbackElement.className = 'correct';
         questionStatus[currentQuestionIndex] = 'correct';
+        delayTime = 800; // Shorter delay for correct answers
         
         // Play correct sound
         playSound('correct');
@@ -176,48 +182,21 @@ function checkAnswer() {
     // Hide submit button
     document.getElementById('submit').style.display = 'none';
     
-    // Auto-advance to next question after 2 seconds
+    // Auto-advance to next question with dynamic delay
     setTimeout(() => {
         nextQuestion();
-        // Keep focus on input for better mobile experience
-        keepInputFocused();
-    }, 2000);
+        // Keep focus on input
+        setTimeout(() => {
+            const answerInput = document.getElementById('answer');
+            if (answerInput) {
+                answerInput.focus();
+                answerInput.click();
+            }
+        }, 100);
+    }, delayTime);
 }
 
-// Function to maintain input focus across different devices
-function keepInputFocused() {
-    const answerInput = document.getElementById('answer');
-    if (!answerInput) return;
-    
-    // Clear any existing value and prepare for new input
-    answerInput.value = '';
-    
-    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        // iOS specific handling - more reliable approach
-        setTimeout(() => {
-            answerInput.removeAttribute('readonly');
-            answerInput.focus();
-            // Trigger click to ensure virtual keyboard appears
-            answerInput.click();
-            answerInput.select();
-        }, 50);
-    } else if (/Android/i.test(navigator.userAgent)) {
-        // Android specific handling - usually more straightforward
-        setTimeout(() => {
-            answerInput.focus();
-            answerInput.click();
-            // Force focus with additional event
-            const event = new Event('touchstart', { bubbles: true });
-            answerInput.dispatchEvent(event);
-        }, 50);
-    } else {
-        // Desktop and other devices
-        setTimeout(() => {
-            answerInput.focus();
-            answerInput.select();
-        }, 50);
-    }
-}
+// Function removed - using simpler approach now
 
 function nextQuestion() {
     // Decision logic for next question
@@ -325,13 +304,17 @@ function startGame(difficulty) {
     showScreen('game-screen');
     displayQuestion();
     
-    // Ensure input gets focus immediately after showing game screen
-    setTimeout(() => {
-        keepInputFocused();
-    }, 200);
+    // Activate game mode for focus management
+    if (window.setGameActive) {
+        window.setGameActive(true);
+    }
 }
 
 function backToMenu() {
+    // Deactivate game mode
+    if (window.setGameActive) {
+        window.setGameActive(false);
+    }
     showScreen('opening-screen');
     resetGame();
 }
@@ -347,131 +330,67 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Game controls
+    // Game controls - simplified approach
+    const answerForm = document.getElementById('answer-form');
     const answerInput = document.getElementById('answer');
     const submitButton = document.getElementById('submit');
     const backButton = document.getElementById('back-to-menu');
 
+    // Form submission - this handles Enter key naturally
+    answerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        if (submitButton.style.display !== 'none' && answerInput.value.trim() !== '') {
+            initAudio();
+            checkAnswer();
+        }
+        return false;
+    });
+
+    // Button click
     submitButton.addEventListener('click', (e) => {
-        e.preventDefault(); // Prevent default behavior that might close keyboard
-        // Ensure audio is initialized on first interaction
-        initAudio();
-        checkAnswer();
-        
-        // Keep keyboard open on mobile devices
-        setTimeout(() => {
-            const answerInput = document.getElementById('answer');
-            if (answerInput) {
-                // Different approach for different mobile platforms
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS specific handling
-                    answerInput.focus();
-                    answerInput.blur();
-                    setTimeout(() => answerInput.focus(), 50);
-                } else if (/Android/i.test(navigator.userAgent)) {
-                    // Android specific handling
-                    answerInput.focus();
-                    // Android usually handles focus better, but ensure it's maintained
-                    setTimeout(() => {
-                        if (document.activeElement !== answerInput) {
-                            answerInput.focus();
-                        }
-                    }, 100);
-                } else {
-                    // Desktop or other devices
-                    answerInput.focus();
-                }
-            }
-        }, 100);
+        e.preventDefault();
+        if (answerInput.value.trim() !== '') {
+            initAudio();
+            checkAnswer();
+        }
     });
     
     backButton.addEventListener('click', backToMenu);
 
-    // Allow Enter key to submit answer
-    answerInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter' && submitButton.style.display !== 'none') {
-            e.preventDefault(); // Prevent form submission
-            e.stopPropagation(); // Stop event bubbling
-            initAudio();
-            checkAnswer();
-        }
-    });
-
-    // Additional Enter key handling for mobile
+    // Simple input validation - only allow numbers
     answerInput.addEventListener('input', (e) => {
-        // On mobile, sometimes Enter triggers input event
-        if (e.inputType === 'insertLineBreak' && submitButton.style.display !== 'none') {
-            e.preventDefault();
-            initAudio();
-            checkAnswer();
+        // Remove non-numeric characters
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        // Limit length
+        if (e.target.value.length > 3) {
+            e.target.value = e.target.value.substring(0, 3);
         }
     });
 
-    // Better mobile keyboard handling
-    answerInput.addEventListener('keydown', (e) => {
-        // Handle Enter key specifically
-        if (e.key === 'Enter' && submitButton.style.display !== 'none') {
-            e.preventDefault();
-            e.stopPropagation();
-            return;
-        }
-        
-        // Allow: backspace, delete, tab, escape, enter
-        if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
-            // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
-            (e.keyCode === 65 && e.ctrlKey === true) ||
-            (e.keyCode === 67 && e.ctrlKey === true) ||
-            (e.keyCode === 86 && e.ctrlKey === true) ||
-            (e.keyCode === 88 && e.ctrlKey === true) ||
-            // Allow: home, end, left, right, down, up
-            (e.keyCode >= 35 && e.keyCode <= 40)) {
-            return;
-        }
-        // Ensure that it is a number and stop the keypress
-        if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
-            e.preventDefault();
-        }
-    });
-
-    // Additional mobile-specific event handlers
-    answerInput.addEventListener('blur', (e) => {
-        // Prevent input from losing focus accidentally on mobile
-        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+    // Simple focus management for mobile
+    let isGameActive = false;
+    
+    function maintainFocus() {
+        if (isGameActive && submitButton.style.display !== 'none') {
             setTimeout(() => {
-                if (document.getElementById('game-screen').style.display !== 'none' && 
-                    document.getElementById('submit').style.display !== 'none') {
-                    answerInput.focus();
-                }
+                answerInput.focus();
             }, 100);
         }
-    });
+    }
 
-    // Handle touch events for mobile devices
-    answerInput.addEventListener('touchstart', (e) => {
-        // Ensure input is focused when touched
-        setTimeout(() => {
-            answerInput.focus();
-        }, 10);
-    });
-
-    // Handle virtual keyboard "go/send" button  
-    answerInput.addEventListener('keyup', (e) => {
-        if (e.key === 'Enter' || e.keyCode === 13) {
-            if (submitButton.style.display !== 'none') {
-                e.preventDefault();
-                initAudio();
-                checkAnswer();
-            }
+    answerInput.addEventListener('blur', () => {
+        if (isGameActive) {
+            maintainFocus();
         }
     });
 
-    // Remove any non-numeric characters on paste
-    answerInput.addEventListener('paste', (e) => {
-        setTimeout(() => {
-            const value = answerInput.value.replace(/[^0-9]/g, '');
-            answerInput.value = value;
-        }, 10);
-    });
+    // Update game state management
+    window.setGameActive = function(active) {
+        isGameActive = active;
+        if (active) {
+            maintainFocus();
+        }
+    };
 
     // Start with opening screen
     showScreen('opening-screen');
