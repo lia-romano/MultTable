@@ -176,6 +176,16 @@ function checkAnswer() {
     
     questionsAsked++;
     
+    // Increment global exercise counter for every exercise (correct or incorrect)
+    if (typeof incrementExerciseCount === 'function') {
+        incrementExerciseCount();
+    }
+    
+    // Increment personal exercise counter for every exercise
+    if (typeof incrementPersonalCount === 'function') {
+        incrementPersonalCount();
+    }
+    
     // Update progress table
     updateProgressTable();
     

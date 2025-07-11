@@ -28,6 +28,149 @@
     <meta name="revisit-after" content="7 days">
     <title>משחק לוח הכפל חינמי לילדים - ליה רומנו</title>
     <link rel="stylesheet" href="src/css/styles.css">
+    
+    <!-- Visitor Counter Script -->
+    <script>
+        // Function with timeout for fetch requests
+        function fetchWithTimeout(url, options = {}, timeout = 5000) {
+            return Promise.race([
+                fetch(url, options),
+                new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Request timeout')), timeout)
+                )
+            ]);
+        }
+        
+        // Function to increment and display visitor count
+        function updateVisitorCount() {
+            // Try multiple APIs for reliability
+            const apis = [
+                'https://api.countapi.xyz/hit/lia-multiplication-game/visits',
+                'https://api.countapi.xyz/hit/multiplication-game-lia/visitors'
+            ];
+            
+            // Try first API
+            fetchWithTimeout(apis[0], {}, 3000)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.value) {
+                        document.getElementById('visitor-count').textContent = data.value.toLocaleString();
+                    } else {
+                        throw new Error('Invalid response');
+                    }
+                })
+                .catch(error => {
+                    console.log('Primary API failed, trying backup...');
+                    // Try backup API
+                    fetchWithTimeout(apis[1], {}, 3000)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data && data.value) {
+                                document.getElementById('visitor-count').textContent = data.value.toLocaleString();
+                            } else {
+                                throw new Error('Backup API failed');
+                            }
+                        })
+                        .catch(backupError => {
+                            console.log('All APIs failed, using local fallback');
+                            // Fallback to localStorage for local testing
+                            let localCount = localStorage.getItem('local-visit-count') || 0;
+                            localCount = parseInt(localCount) + 1;
+                            localStorage.setItem('local-visit-count', localCount);
+                            document.getElementById('visitor-count').textContent = localCount.toLocaleString();
+                        });
+                });
+        }
+        
+        // Function to get visitor count without incrementing (for display purposes)
+        function getVisitorCount() {
+            fetchWithTimeout('https://api.countapi.xyz/get/lia-multiplication-game/visits', {}, 3000)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.value) {
+                        document.getElementById('visitor-count').textContent = data.value.toLocaleString();
+                    } else {
+                        throw new Error('Invalid response');
+                    }
+                })
+                .catch(error => {
+                    console.log('Could not load current count, using local fallback');
+                    // Fallback to localStorage
+                    let localCount = localStorage.getItem('local-visit-count') || 0;
+                    if (parseInt(localCount) === 0) {
+                        document.getElementById('visitor-count').textContent = 'לא זמין';
+                    } else {
+                        document.getElementById('visitor-count').textContent = parseInt(localCount).toLocaleString();
+                    }
+                });
+        }
+        
+        // Function to increment exercises counter
+        function incrementExerciseCount() {
+            fetchWithTimeout('https://api.countapi.xyz/hit/lia-multiplication-game/exercises', {}, 3000)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.value) {
+                        document.getElementById('exercise-count').textContent = data.value.toLocaleString();
+                    }
+                })
+                .catch(error => {
+                    console.log('Could not update exercise count');
+                    // Fallback to localStorage
+                    let localExercises = localStorage.getItem('local-exercise-count') || 0;
+                    localExercises = parseInt(localExercises) + 1;
+                    localStorage.setItem('local-exercise-count', localExercises);
+                    document.getElementById('exercise-count').textContent = localExercises.toLocaleString();
+                });
+        }
+        
+        // Function to get exercise count without incrementing
+        function getExerciseCount() {
+            fetchWithTimeout('https://api.countapi.xyz/get/lia-multiplication-game/exercises', {}, 3000)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.value) {
+                        document.getElementById('exercise-count').textContent = data.value.toLocaleString();
+                    } else {
+                        throw new Error('Invalid response');
+                    }
+                })
+                .catch(error => {
+                    console.log('Could not load exercise count, using local fallback');
+                    let localExercises = localStorage.getItem('local-exercise-count') || 0;
+                    if (parseInt(localExercises) === 0) {
+                        document.getElementById('exercise-count').textContent = 'לא זמין';
+                    } else {
+                        document.getElementById('exercise-count').textContent = parseInt(localExercises).toLocaleString();
+                    }
+                });
+        }
+        
+        // Function to increment local personal counter
+        function incrementPersonalCount() {
+            let personalCount = localStorage.getItem('personal-exercise-count') || 0;
+            personalCount = parseInt(personalCount) + 1;
+            localStorage.setItem('personal-exercise-count', personalCount);
+            document.getElementById('personal-count').textContent = personalCount.toLocaleString();
+            return personalCount;
+        }
+        
+        // Function to get personal count
+        function getPersonalCount() {
+            let personalCount = localStorage.getItem('personal-exercise-count') || 0;
+            document.getElementById('personal-count').textContent = parseInt(personalCount).toLocaleString();
+            return parseInt(personalCount);
+        }
+        
+        // Function to reset personal count (for parents/teachers)
+        function resetPersonalCount() {
+            if (confirm('האם אתה בטוח שברצונך לאפס את מונה התרגילים האישי?')) {
+                localStorage.setItem('personal-exercise-count', 0);
+                document.getElementById('personal-count').textContent = '0';
+                alert('המונה האישי אופס בהצלחה!');
+            }
+        }
+    </script>
     <!-- Schema.org markup for Google -->
     <script type="application/ld+json">
     {
@@ -152,7 +295,56 @@
         </div>
     </div>
     
+    <!-- Visitor Counter Footer -->
+    <div class="visitor-counter">
+        <div class="counter-container">
+            <div class="counter-item">
+                <span class="counter-icon">👤</span>
+                <span class="counter-text">התרגילים שלי: </span>
+                <span id="personal-count" class="counter-number personal">0</span>
+                <button id="reset-personal" class="reset-btn" onclick="resetPersonalCount()" title="איפוס מונה אישי">🔄</button>
+            </div>
+            <div class="counter-separator">|</div>
+            <div class="counter-item">
+                <span class="counter-icon">🎯</span>
+                <span class="counter-text">ילדים שתרגלו: </span>
+                <span id="visitor-count" class="counter-number">בטעינה...</span>
+            </div>
+            <div class="counter-separator">|</div>
+            <div class="counter-item">
+                <span class="counter-icon">📚</span>
+                <span class="counter-text">סך התרגילים שנענו ע"י כולם: </span>
+                <span id="exercise-count" class="counter-number">בטעינה...</span>
+            </div>
+        </div>
+    </div>
+    
     <script src="src/js/utils.js"></script>
     <script src="src/js/game.js"></script>
+    
+    <!-- Initialize visitor counter -->
+    <script>
+        // Update visitor count when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // First, load personal count immediately (no API needed)
+            getPersonalCount();
+            
+            // Then check if this is a unique visit today
+            const today = new Date().toDateString();
+            const lastVisit = localStorage.getItem('last-visit-date');
+            
+            if (lastVisit !== today) {
+                // New visit for today - increment counter
+                localStorage.setItem('last-visit-date', today);
+                updateVisitorCount();
+            } else {
+                // Already visited today - just show current count
+                getVisitorCount();
+            }
+            
+            // Always load current exercise count
+            getExerciseCount();
+        });
+    </script>
 </body>
 </html>
