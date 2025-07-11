@@ -128,25 +128,7 @@ function displayQuestion() {
     
     // Enhanced focus for mobile devices
     setTimeout(() => {
-        answerInput.focus();
-        
-        if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-            // iOS specific handling
-            answerInput.click();
-            answerInput.focus();
-            // Additional iOS-specific handling
-            answerInput.setAttribute('readonly', false);
-            answerInput.removeAttribute('readonly');
-        } else if (/Android/i.test(navigator.userAgent)) {
-            // Android specific handling
-            answerInput.click();
-            answerInput.focus();
-            // Android usually responds better to these events
-            answerInput.dispatchEvent(new Event('touchstart', { bubbles: true }));
-        } else {
-            // Desktop
-            answerInput.focus();
-        }
+        keepInputFocused();
     }, 150);
     
     // Update progress table to highlight current question
@@ -197,17 +179,44 @@ function checkAnswer() {
     // Auto-advance to next question after 2 seconds
     setTimeout(() => {
         nextQuestion();
-        // Ensure keyboard stays active after auto-advance
-        setTimeout(() => {
-            const answerInput = document.getElementById('answer');
-            if (answerInput) {
-                answerInput.focus();
-                if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-                    answerInput.click();
-                }
-            }
-        }, 200);
+        // Keep focus on input for better mobile experience
+        keepInputFocused();
     }, 2000);
+}
+
+// Function to maintain input focus across different devices
+function keepInputFocused() {
+    const answerInput = document.getElementById('answer');
+    if (!answerInput) return;
+    
+    // Clear any existing value and prepare for new input
+    answerInput.value = '';
+    
+    if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        // iOS specific handling - more reliable approach
+        setTimeout(() => {
+            answerInput.removeAttribute('readonly');
+            answerInput.focus();
+            // Trigger click to ensure virtual keyboard appears
+            answerInput.click();
+            answerInput.select();
+        }, 50);
+    } else if (/Android/i.test(navigator.userAgent)) {
+        // Android specific handling - usually more straightforward
+        setTimeout(() => {
+            answerInput.focus();
+            answerInput.click();
+            // Force focus with additional event
+            const event = new Event('touchstart', { bubbles: true });
+            answerInput.dispatchEvent(event);
+        }, 50);
+    } else {
+        // Desktop and other devices
+        setTimeout(() => {
+            answerInput.focus();
+            answerInput.select();
+        }, 50);
+    }
 }
 
 function nextQuestion() {
@@ -315,6 +324,11 @@ function startGame(difficulty) {
     
     showScreen('game-screen');
     displayQuestion();
+    
+    // Ensure input gets focus immediately after showing game screen
+    setTimeout(() => {
+        keepInputFocused();
+    }, 200);
 }
 
 function backToMenu() {
@@ -377,34 +391,31 @@ document.addEventListener('DOMContentLoaded', () => {
     answerInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter' && submitButton.style.display !== 'none') {
             e.preventDefault(); // Prevent form submission
+            e.stopPropagation(); // Stop event bubbling
             initAudio();
             checkAnswer();
-            
-            // Keep keyboard open after Enter
-            setTimeout(() => {
-                if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    // iOS specific handling
-                    answerInput.focus();
-                    answerInput.blur();
-                    setTimeout(() => answerInput.focus(), 50);
-                } else if (/Android/i.test(navigator.userAgent)) {
-                    // Android specific handling
-                    answerInput.focus();
-                    // On Android, sometimes we need to ensure the keyboard stays
-                    setTimeout(() => {
-                        if (document.activeElement !== answerInput) {
-                            answerInput.focus();
-                        }
-                    }, 100);
-                } else {
-                    answerInput.focus();
-                }
-            }, 100);
         }
     });
 
-    // Block non-numeric input
+    // Additional Enter key handling for mobile
+    answerInput.addEventListener('input', (e) => {
+        // On mobile, sometimes Enter triggers input event
+        if (e.inputType === 'insertLineBreak' && submitButton.style.display !== 'none') {
+            e.preventDefault();
+            initAudio();
+            checkAnswer();
+        }
+    });
+
+    // Better mobile keyboard handling
     answerInput.addEventListener('keydown', (e) => {
+        // Handle Enter key specifically
+        if (e.key === 'Enter' && submitButton.style.display !== 'none') {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+        }
+        
         // Allow: backspace, delete, tab, escape, enter
         if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
             // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
@@ -419,6 +430,38 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ensure that it is a number and stop the keypress
         if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
             e.preventDefault();
+        }
+    });
+
+    // Additional mobile-specific event handlers
+    answerInput.addEventListener('blur', (e) => {
+        // Prevent input from losing focus accidentally on mobile
+        if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+            setTimeout(() => {
+                if (document.getElementById('game-screen').style.display !== 'none' && 
+                    document.getElementById('submit').style.display !== 'none') {
+                    answerInput.focus();
+                }
+            }, 100);
+        }
+    });
+
+    // Handle touch events for mobile devices
+    answerInput.addEventListener('touchstart', (e) => {
+        // Ensure input is focused when touched
+        setTimeout(() => {
+            answerInput.focus();
+        }, 10);
+    });
+
+    // Handle virtual keyboard "go/send" button  
+    answerInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter' || e.keyCode === 13) {
+            if (submitButton.style.display !== 'none') {
+                e.preventDefault();
+                initAudio();
+                checkAnswer();
+            }
         }
     });
 

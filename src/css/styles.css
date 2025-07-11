@@ -189,29 +189,36 @@ body {
     /* Prevent zoom on iOS and keep keyboard visible */
     -webkit-appearance: none;
     appearance: none;
-    -webkit-user-select: none;
-    user-select: none;
     touch-action: manipulation;
+    /* Improved mobile keyboard handling */
+    -webkit-tap-highlight-color: rgba(0,0,0,0.1);
+    -webkit-touch-callout: none;
+    -webkit-user-select: text;
+    user-select: text;
 }
 
-/* Ensure keyboard stays visible on mobile */
+/* Ensure keyboard stays visible on mobile - iOS specific */
 @supports (-webkit-touch-callout: none) {
-    /* iOS specific */
     #answer {
-        font-size: 16px; /* Prevent zoom on iOS */
+        font-size: 16px !important; /* Prevent zoom on iOS */
         transform: scale(1.5625); /* Scale back to 2.5rem visual size */
         transform-origin: center;
+        /* Ensure the input can receive focus */
+        pointer-events: auto;
     }
 }
 
 /* Android specific optimizations */
-@media screen and (-webkit-min-device-pixel-ratio: 1) and (max-device-width: 1024px) {
+@media screen and (max-device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
     #answer {
         /* Ensure minimum font size for Android to prevent zoom */
-        font-size: max(2.5rem, 16px);
+        font-size: max(2.5rem, 16px) !important;
         /* Better touch handling on Android */
         touch-action: manipulation;
-        -webkit-tap-highlight-color: transparent;
+        -webkit-tap-highlight-color: rgba(102, 126, 234, 0.2);
+        /* Ensure proper keyboard behavior */
+        -webkit-appearance: textfield;
+        appearance: textfield;
     }
 }
 
