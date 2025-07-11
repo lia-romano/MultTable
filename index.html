@@ -80,16 +80,49 @@
                 iframe.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3';
                 document.body.appendChild(iframe);
                 
-                // Remove iframe after 2 seconds
+                // After iframe loads, refresh the display
+                iframe.onload = function() {
+                    console.log('Counter incremented, refreshing display...');
+                    setTimeout(() => {
+                        refreshExerciseCounterDisplay();
+                    }, 1000);
+                };
+                
+                // Remove iframe after 3 seconds
                 setTimeout(() => {
                     if (iframe.parentNode) {
                         iframe.parentNode.removeChild(iframe);
                     }
-                }, 2000);
+                }, 3000);
                 
-                console.log('Global exercise counter incremented');
+                console.log('Global exercise counter increment attempted');
             } catch (error) {
                 console.error('Failed to increment global exercise counter:', error);
+            }
+        }
+        
+        // Function to refresh the exercise counter display
+        function refreshExerciseCounterDisplay() {
+            try {
+                // Find the exercise counter container
+                const exerciseCounterContainer = document.querySelector('.counter-item:nth-child(3) .counter-number');
+                if (exerciseCounterContainer) {
+                    // Remove old script
+                    const oldScript = exerciseCounterContainer.querySelector('script');
+                    if (oldScript) {
+                        oldScript.remove();
+                    }
+                    
+                    // Add new script with timestamp to avoid caching
+                    const newScript = document.createElement('script');
+                    newScript.type = 'text/javascript';
+                    newScript.src = 'https://freevisitorcounters.com/en/home/counter/1363237/t/3?' + Date.now();
+                    exerciseCounterContainer.appendChild(newScript);
+                    
+                    console.log('Exercise counter display refreshed');
+                }
+            } catch (error) {
+                console.error('Failed to refresh exercise counter display:', error);
             }
         }
     </script>
