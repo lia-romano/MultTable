@@ -30,31 +30,14 @@
     <link rel="stylesheet" href="src/css/styles.css">
     
     <!-- 
-    Multiple Counter Services Setup - CONFIGURED ✅
-    Primary: CountAPI (your token: ut_Atq7mcamb6t6FQ00FYPC7rNfu1xzS5at05KRgiP7)
-    Backup: HitCounter (public API)
-    The system will try each service until one works!
+    Shields.io Visitor Counter Integration ✅
+    Uses shields.io visitor counter (ESKYoung/shields-io-visitor-counter)
+    Repository: lia-romano/MultTable
+    Falls back to "שירות לא זמין" if unavailable
     -->
     
     <!-- Counter Scripts -->
     <script>
-        // Multiple counter service configurations for reliability
-        const COUNTER_SERVICES = [
-            {
-                name: 'CountAPI',
-                namespace: 'lia-multiplication-game-v2',
-                getUrl: (key) => `https://api.countapi.xyz/get/lia-multiplication-game-v2/${key}`,
-                hitUrl: (key) => `https://api.countapi.xyz/hit/lia-multiplication-game-v2/${key}`,
-                parseValue: (data) => data?.value
-            },
-            {
-                name: 'HitCounter',
-                namespace: 'lia-multiplication-game',
-                getUrl: (key) => `https://api.hitcounter.io/api/get/${key}`,
-                hitUrl: (key) => `https://api.hitcounter.io/api/hit/${key}`,
-                parseValue: (data) => data?.count
-            }
-        ];
         
         // Helper function for fetch with timeout
         function fetchWithTimeout(url, options = {}, timeout = 5000) {
@@ -68,71 +51,71 @@
             ]);
         }
         
-        // Try multiple services until one works
-        async function tryCounterServices(action, key = 'visitors') {
-            for (const service of COUNTER_SERVICES) {
-                try {
-                    console.log(`Trying ${service.name} service...`);
-                    const url = action === 'hit' ? service.hitUrl(key) : service.getUrl(key);
-                    
-                    const response = await fetchWithTimeout(url, {}, 3000);
-                    console.log(`${service.name} response status:`, response.status);
-                    
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-                    
-                    const data = await response.json();
-                    console.log(`${service.name} response data:`, data);
-                    
-                    const value = service.parseValue(data);
-                    if (typeof value === 'number') {
-                        console.log(`${service.name} worked! Value:`, value);
-                        return value;
-                    } else {
-                        throw new Error('Invalid response format');
-                    }
-                } catch (error) {
-                    console.log(`${service.name} failed:`, error.message);
-                    continue;
+        // Function to get visitor count from shields.io
+        async function getShieldsVisitorCount() {
+            try {
+                // Use the visitor counter endpoint from your repository
+                const url = `https://raw.githubusercontent.com/lia-romano/MultTable/visitor-counter/badge.json`;
+                
+                console.log('Attempting to get visitor count from shields.io visitor counter...');
+                const response = await fetchWithTimeout(url, {}, 3000);
+                
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
                 }
+                
+                // Get the JSON response
+                const badgeData = await response.json();
+                console.log('Badge data received:', badgeData);
+                
+                // Extract the visitor count from the message field
+                const message = badgeData.message;
+                if (message && message !== 'loading...') {
+                    const count = parseInt(message.replace(/[^\d]/g, ''));
+                    if (!isNaN(count)) {
+                        console.log('Extracted count:', count);
+                        return count;
+                    }
+                }
+                
+                throw new Error('Could not extract valid count from badge data');
+                
+            } catch (error) {
+                console.error('Shields.io visitor counter failed:', error.message);
+                throw error;
             }
-            throw new Error('All counter services failed');
         }
+
         
         // Function to update global visitor count
         async function updateGlobalVisitorCount() {
+            console.log('Attempting to update visitor count...');
+            
             try {
-                console.log('Attempting to update visitor count...');
-                const count = await tryCounterServices('hit', 'visitors');
+                // Try shields.io visitor counter
+                const count = await getShieldsVisitorCount();
                 document.getElementById('global-visitor-count').textContent = count.toLocaleString();
-                console.log('Visitor count updated successfully:', count);
-            } catch (error) {
-                console.error('Failed to update visitor count:', error.message);
-                // Show helpful message based on the environment
-                if (window.location.protocol === 'file:') {
-                    document.getElementById('global-visitor-count').textContent = 'יעבוד כשהאתר אונליין';
-                } else {
-                    document.getElementById('global-visitor-count').textContent = 'לא זמין';
-                }
+                console.log('Shields.io visitor count updated successfully:', count);
+            } catch (shieldsError) {
+                console.error('Shields.io visitor counter failed:', shieldsError.message);
+                document.getElementById('global-visitor-count').textContent = 'שירות לא זמין';
             }
         }
         
         // Function to get current visitor count (without incrementing)
         async function getGlobalVisitorCount() {
+            console.log('Attempting to get visitor count...');
+            
             try {
-                console.log('Attempting to get visitor count...');
-                const count = await tryCounterServices('get', 'visitors');
+                // Try shields.io visitor counter
+                const count = await getShieldsVisitorCount();
                 document.getElementById('global-visitor-count').textContent = count.toLocaleString();
-                console.log('Visitor count retrieved successfully:', count);
-            } catch (error) {
-                console.error('Failed to get visitor count:', error.message);
-                // Show helpful message based on the environment
-                if (window.location.protocol === 'file:') {
-                    document.getElementById('global-visitor-count').textContent = 'יעבוד כשהאתר אונליין';
-                } else {
-                    document.getElementById('global-visitor-count').textContent = 'לא זמין';
-                }
+                console.log('Shields.io visitor count retrieved successfully:', count);
+            } catch (shieldsError) {
+                console.error('Shields.io visitor counter failed:', shieldsError.message);
+                document.getElementById('global-visitor-count').textContent = 'שירות לא זמין';
             }
         }
         
