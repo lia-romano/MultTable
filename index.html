@@ -10,8 +10,52 @@
     <meta name="theme-color" content="#667eea">
     <meta name="msapplication-TileColor" content="#667eea">
     <meta name="format-detection" content="telephone=no">
-    <title>משחק כפל</title>
+    <meta name="description" content="משחק לוח הכפל אינטרקטיבי וחינמי לילדים בעברית. 4 רמות קושי, מעקב התקדמות, צלילי משוב ועיצוב ידידותי לנייד. פותח על ידי ליה רומנו.">
+    <meta name="keywords" content="משחק כפל, לוח הכפל, משחק לילדים, עברית, חינוך, מתמטיקה, ליה רומנו, משחק חינמי, תרגול כפל, משחק אונליין, כפל לילדים, לימוד מתמטיקה">
+    <meta name="author" content="ליה רומנו">
+    <meta property="og:title" content="משחק לוח הכפל חינמי לילדים - ליה רומנו">
+    <meta property="og:description" content="משחק אינטרקטיבי וחינמי ללימוד לוח הכפל לילדים בעברית. 4 רמות קושי ועיצוב ידידותי לנייד.">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="he_IL">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="משחק לוח הכפל חינמי לילדים">
+    <meta name="twitter:description" content="משחק אינטרקטיבי וחינמי ללימוד לוח הכפל לילדים בעברית">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <link rel="canonical" href="https://romano.github.io/multiplication-game/">
+    <link rel="sitemap" type="application/xml" href="/multiplication-game/sitemap.xml">
+    <meta name="language" content="Hebrew">
+    <meta name="revisit-after" content="7 days">
+    <title>משחק לוח הכפל חינמי לילדים - ליה רומנו</title>
     <link rel="stylesheet" href="src/css/styles.css">
+    <!-- Schema.org markup for Google -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": "משחק לוח הכפל חינמי לילדים",
+        "description": "משחק אינטרקטיבי וחינמי ללימוד לוח הכפל לילדים בעברית עם 4 רמות קושי ועיצוב ידידותי לנייד",
+        "author": {
+            "@type": "Person",
+            "name": "ליה רומנו"
+        },
+        "inLanguage": "he",
+        "audience": {
+            "@type": "Audience",
+            "audienceType": "children"
+        },
+        "educationalUse": "mathematics",
+        "keywords": "משחק כפל, לוח הכפל, חינוך, מתמטיקה, חינמי, תרגול כפל, כפל לילדים, לימוד מתמטיקה",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "ILS",
+            "availability": "https://schema.org/InStock"
+        },
+        "applicationCategory": "Educational Game",
+        "operatingSystem": "Web Browser"
+    }
+    </script>
 </head>
 <body>
     <!-- Opening Screen -->
@@ -22,6 +66,7 @@
             </div>
             <h1 class="main-title">משחק לוח הכפל</h1>
             <h2 class="welcome-title">ברוכים הבאים</h2>
+            <p class="intro-text">משחק חינמי ואינטרקטיבי ללימוד לוח הכפל בעברית - מתאים לילדים בגילאי 6-12</p>
             <h3 class="subtitle">בחרו רמת קושי:</h3>
             <div class="difficulty-buttons">
                 <button class="difficulty-btn" data-level="easy">קל</button>
@@ -43,7 +88,13 @@
                     <strong>הכל:</strong> כל הכפולות עד 10
                 </div>
             </div>
-            <div class="credit">המשחק נבנה על ידי ליה רומנו</div>
+            <div class="credit">
+                המשחק נבנה על ידי ליה רומנו
+                <br>
+                <small>משחק חינמי ללימוד לוח הכפל המותאם לילדים בגילאי 6-12</small>
+                <br>
+                <small>✓ 4 רמות קושי ✓ מעקב התקדמות ✓ צלילי משוב ✓ מותאם לנייד</small>
+            </div>
         </div>
     </div>
 
@@ -51,7 +102,7 @@
     <div id="game-screen" class="screen hidden">
         <div class="game-container">
             <div class="header-section">
-                <h1>משחק כפל</h1>
+                <h1>משחק לוח הכפל - ליה רומנו</h1>
                 <div class="difficulty-display" id="current-difficulty"></div>
                 <button id="back-to-menu" class="back-btn">חזרה לתפריט</button>
             </div>

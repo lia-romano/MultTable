@@ -1,14 +1,16 @@
-# משחק לוח הכפל - Multiplication Game
+# משחק לוח הכפל חינמי לילדים - Multiplication Game
 
-משחק אינטרקטיבי ללימוד לוח הכפל לילדים, פותח על ידי ליה רומנו.
+משחק אינטרקטיבי וחינמי ללימוד לוח הכפל לילדים בעברית, פותח על ידי ליה רומנו.
 
 ## תכונות
 
 - 4 רמות קושי שונות
 - מעקב אחר התקדמות
 - צלילי משוב
-- עיצוב ריספונסיבי לכל המכשירים
+- עיצוב ריספונסיבי לכל המכשירים (iPhone, Android, Desktop)
 - תמיכה בעברית מלאה
+- אופטימיזציה למנועי חיפוש (SEO)
+- משחק חינמי לחלוטין
 
 ## רמות קושי
 
@@ -17,37 +19,72 @@
 - **קשה:** לוח הכפל של 7, 8, 9
 - **הכל:** כל הכפולות עד 10
 
+## כיצד למצוא את המשחק בגוגל
+
+אנשים יכולים לחפש:
+- "משחק כפל עברית"
+- "משחק לוח הכפל בעברית"
+- "משחק מתמטיקה לילדים עברית"
+- "תרגול לוח הכפל"
+- "משחק כפל אונליין"
+- "לוח כפל אינטראקטיבי"
+- "משחק כפל חינמי"
+
 ## הרצה מקומית
 
 1. הורד את הקבצים
-2. פתח את `src/index.html` בדפדפן
+2. פתח את `index.html` בדפדפן
 
 ## פרסום באתר
 
 האתר מותאם לפרסום ב:
-- GitHub Pages
+- GitHub Pages (מומלץ)
 - Netlify
 - Vercel
 - Firebase Hosting
-- `src/js/game.js`: The main game logic, handling user interactions, game flow, and UI updates.
-- `src/js/utils.js`: Utility functions that support the game logic, such as generating random multiplication questions and validating answers.
-- `src/assets/sounds`: A directory containing sound files for game feedback (e.g., sounds for correct or incorrect answers).
-- `package.json`: Configuration file for npm, listing dependencies and scripts for the project.
 
-## How to Run the Game
+הקבצים הנדרשים:
+- `index.html` - עמוד ראשי
+- `src/` - תיקיית קוד מקור
+- `sitemap.xml` - מפת אתר למנועי חיפוש
+- `robots.txt` - הוראות למנועי חיפוש
 
-1. Clone the repository to your local machine.
-2. Navigate to the project directory.
-3. Open `src/index.html` in your web browser to start playing the game.
+## SEO ואופטימיזציה
 
-## Features
+המשחק כולל:
+- ✅ Meta tags מתקדמים
+- ✅ Schema.org markup
+- ✅ Open Graph tags
+- ✅ Twitter Cards
+- ✅ Sitemap.xml
+- ✅ Robots.txt
+- ✅ מילות מפתח רלוונטיות
+- ✅ תוכן בעברית איכותי
 
-- Interactive multiplication questions.
-- Immediate feedback on answers.
-- Sound effects for correct and incorrect answers.
-- User-friendly interface designed for children.
+## מבנה הפרויקט
+```
+├── index.html              # עמוד ראשי (GitHub Pages)
+├── sitemap.xml            # מפת אתר למנועי חיפוש
+├── robots.txt             # הוראות למנועי חיפוש
+├── src/
+│   ├── css/
+│   │   └── styles.css     # עיצוב ריספונסיבי
+│   ├── js/
+│   │   ├── game.js        # לוגיקת המשחק
+│   │   └── utils.js       # פונקציות עזר
+│   └── assets/
+│       ├── sounds/        # קבצי צליל
+│       └── images/        # תמונות
+├── package.json           # הגדרות npm
+└── README.md             # תיעוד
 
-## Future Improvements
+## יוצר
+
+פותח על ידי **ליה רומנו** - משחק חינוכי לילדים
+
+## רישיון
+
+משחק חינמי לשימוש חינוכי
 
 - Add more levels of difficulty.
 - Include a timer for added challenge.

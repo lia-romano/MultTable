@@ -64,8 +64,16 @@ body {
 .welcome-title {
     font-size: 1.8rem;
     color: #764ba2;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     font-weight: normal;
+}
+
+.intro-text {
+    font-size: 1.1rem;
+    color: #666;
+    margin-bottom: 20px;
+    line-height: 1.4;
+    text-align: center;
 }
 
 .subtitle {
