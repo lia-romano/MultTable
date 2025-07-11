@@ -32,8 +32,8 @@
     <!-- 
     HitWebCounter Integration ✅
     Using hitwebcounter.com for global counters:
-    - Visitor Counter: page=21131245 (auto-increments on page load)
-    - Exercise Counter: page=21131251 (manually incremented on exercises)
+    - Visitor Counter: page=21131351 (auto-increments on page load, 7 digits)
+    - Exercise Counter: page=21131342 (manually incremented on exercises, 7 digits)
     -->
     
     <!-- Counter Scripts -->
@@ -78,7 +78,7 @@
             // Increment global exercise counter via hitwebcounter
             try {
                 const img = new Image();
-                img.src = 'https://hitwebcounter.com/counter/counter.php?page=21131251&style=0001&nbdigits=5&type=page&initCount=0&' + Date.now();
+                img.src = 'https://hitwebcounter.com/counter/counter.php?page=21131342&style=0001&nbdigits=7&type=page&initCount=0&' + Date.now();
                 img.style.display = 'none';
                 document.body.appendChild(img);
                 console.log('Global exercise counter increment attempted via hitwebcounter');
@@ -261,13 +261,13 @@
         <div class="global-counter-item">
             <span>📚 תרגילים בעולם: </span>
             <a href="https://www.hitwebcounter.com" target="_blank">
-                <img src="https://hitwebcounter.com/counter/counter.php?page=21131251&style=0001&nbdigits=5&type=page&initCount=0" title="Exercise Counter" Alt="Exercise Counter" border="0" />
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21131342&style=0001&nbdigits=7&type=page&initCount=0" title="Counter Widget" Alt="Visit counter For Websites" border="0" />
             </a>
         </div>
         <div class="global-counter-item">
-            <span>🌍 מבקרים בעולם: </span>
+            <span>🌍 ביקורים בעולם: </span>
             <a href="https://www.hitwebcounter.com" target="_blank">
-                <img src="https://hitwebcounter.com/counter/counter.php?page=21131245&style=0001&nbdigits=5&type=page&initCount=0" title="Visitor Counter" Alt="Visitor Counter" border="0" />
+                <img src="https://hitwebcounter.com/counter/counter.php?page=21131351&style=0001&nbdigits=7&type=page&initCount=0" title="Counter Widget" Alt="Visit counter For Websites" border="0" />
             </a>
         </div>
     </div>
