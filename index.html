@@ -142,7 +142,10 @@
     <div id="opening-screen" class="screen">
         <div class="welcome-container">
             <div class="intro-image">
-                <img src="src/assets/images/intro.png" alt="תמונת פתיחה" />
+                <img src="src/assets/images/intro.jpg" alt="תמונת פתיחה" 
+                     onload="this.classList.add('loaded')"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='block';" />
+                <div class="fallback-icon" style="display: none;">🎯</div>
             </div>
             <h1 class="main-title">משחק לוח הכפל</h1>
             <h2 class="welcome-title">ברוכים הבאים</h2>

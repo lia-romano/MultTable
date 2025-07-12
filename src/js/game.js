@@ -8,8 +8,9 @@ let currentDifficulty = '';
 let questionStatus = []; // Track status of each question: 'pending', 'correct', 'incorrect'
 let incorrectQuestions = []; // Store indices of questions that were answered incorrectly
 let questionsAsked = 0; // Counter for questions asked
-let mainProgressIndex = 0; // Track main progression through new questions
 let isRetryQuestion = false; // Flag to know if current question is a retry
+let questionsAfterLastError = 0; // Count questions answered since last error
+let lastIncorrectIndex = -1; // Track the last incorrect question for progression logic
 
 // Define difficulty levels
 const difficultyLevels = {
@@ -44,8 +45,9 @@ function generateQuestions(difficulty) {
     questionStatus = new Array(questions.length).fill('pending');
     incorrectQuestions = [];
     questionsAsked = 0;
-    mainProgressIndex = 0;
     isRetryQuestion = false;
+    questionsAfterLastError = 0;
+    lastIncorrectIndex = -1;
     
     shuffleQuestions();
     createProgressTable();
@@ -160,7 +162,12 @@ function checkAnswer() {
         const incorrectIndex = incorrectQuestions.indexOf(currentQuestionIndex);
         if (incorrectIndex > -1) {
             incorrectQuestions.splice(incorrectIndex, 1);
+            console.log('Removed from incorrect questions:', currentQuestionIndex);
         }
+        
+        // Count questions after last error (for progression logic)
+        questionsAfterLastError++;
+        console.log('Correct answer! questionsAfterLastError now:', questionsAfterLastError);
     } else {
         feedbackElement.textContent = `לא נכון. התשובה הנכונה היא ${correctAnswer}`;
         feedbackElement.className = 'incorrect';
@@ -172,7 +179,13 @@ function checkAnswer() {
         // Add to incorrect questions if not already there
         if (!incorrectQuestions.includes(currentQuestionIndex)) {
             incorrectQuestions.push(currentQuestionIndex);
+            console.log('Added to incorrect questions:', currentQuestionIndex);
         }
+        
+        // Reset progression counter and mark this as last error
+        questionsAfterLastError = 0;
+        lastIncorrectIndex = currentQuestionIndex;
+        console.log('Reset questionsAfterLastError to 0, incorrect questions now:', incorrectQuestions);
     }
     
     questionsAsked++;
@@ -210,56 +223,57 @@ function checkAnswer() {
 // Function removed - using simpler approach now
 
 function nextQuestion() {
-    // Decision logic for next question
-    const hasMoreNewQuestions = mainProgressIndex < questions.length - 1;
-    const remainingNewQuestions = questions.length - 1 - mainProgressIndex;
+    // Check if we have completed all questions correctly
+    const allCorrect = questionStatus.every(status => status === 'correct');
     
-    // Only retry incorrect questions if:
-    // 1. There are incorrect questions
-    // 2. We have fewer than 5 remaining new questions OR random chance (25%)
-    // 3. We're not currently doing a retry question
-    const shouldRetryIncorrect = incorrectQuestions.length > 0 && 
-                                !isRetryQuestion && 
-                                hasMoreNewQuestions &&
-                                (remainingNewQuestions <= 5 || Math.random() < 0.25);
+    if (allCorrect) {
+        endGame();
+        return;
+    }
     
-    if (isRetryQuestion) {
-        // If we just did a retry question, return to main progression at the NEXT question
-        isRetryQuestion = false;
-        if (hasMoreNewQuestions) {
-            mainProgressIndex++;
-            currentQuestionIndex = mainProgressIndex;
-            displayQuestion();
-        } else {
-            // No more new questions, continue with incorrect ones
-            if (incorrectQuestions.length > 0) {
-                const randomIncorrectIndex = Math.floor(Math.random() * incorrectQuestions.length);
-                currentQuestionIndex = incorrectQuestions[randomIncorrectIndex];
-                isRetryQuestion = true;
-                displayQuestion();
-            } else {
-                endGame();
-            }
+    // Debug information
+    const pendingQuestions = [];
+    for (let i = 0; i < questionStatus.length; i++) {
+        if (questionStatus[i] === 'pending') {
+            pendingQuestions.push(i);
         }
-    } else if (shouldRetryIncorrect) {
-        // Sometimes retry an incorrect question during main progression
-        const randomIncorrectIndex = Math.floor(Math.random() * incorrectQuestions.length);
-        currentQuestionIndex = incorrectQuestions[randomIncorrectIndex];
-        isRetryQuestion = true;
-        displayQuestion();
-    } else if (hasMoreNewQuestions) {
-        // Continue with next new question in main progression
-        mainProgressIndex++;
-        currentQuestionIndex = mainProgressIndex;
-        displayQuestion();
+    }
+    
+    console.log('=== Next Question Logic ===');
+    console.log('- Pending questions:', pendingQuestions.length, pendingQuestions);
+    console.log('- Incorrect questions:', incorrectQuestions.length, incorrectQuestions);
+    console.log('- Questions after last error:', questionsAfterLastError);
+    console.log('- Current question index:', currentQuestionIndex);
+    
+    let nextIndex = -1;
+    
+    // Simple logic: 
+    // 1. If we haven't progressed 5 questions after an error AND have pending questions -> continue with new
+    // 2. Otherwise if we have incorrect questions -> go back to them
+    // 3. Otherwise continue with pending
+    
+    if (questionsAfterLastError < 5 && pendingQuestions.length > 0) {
+        nextIndex = pendingQuestions[0];
+        isRetryQuestion = false;
+        console.log('-> Continuing with new question (need more progress):', nextIndex);
     } else if (incorrectQuestions.length > 0) {
-        // If no more new questions, focus on incorrect ones
-        const randomIncorrectIndex = Math.floor(Math.random() * incorrectQuestions.length);
-        currentQuestionIndex = incorrectQuestions[randomIncorrectIndex];
+        nextIndex = incorrectQuestions[0];
         isRetryQuestion = true;
+        console.log('-> Going back to incorrect question:', nextIndex);
+    } else if (pendingQuestions.length > 0) {
+        nextIndex = pendingQuestions[0];
+        isRetryQuestion = false;
+        console.log('-> Continuing with pending question (no incorrect):', nextIndex);
+    }
+    
+    console.log('=== Selected next index:', nextIndex, '===');
+    
+    // If we found a question to show
+    if (nextIndex !== -1) {
+        currentQuestionIndex = nextIndex;
         displayQuestion();
     } else {
-        // All questions answered correctly
+        console.log('No more questions found, ending game');
         endGame();
     }
 }
@@ -285,8 +299,9 @@ function resetGame() {
     questionStatus = [];
     incorrectQuestions = [];
     questionsAsked = 0;
-    mainProgressIndex = 0;
     isRetryQuestion = false;
+    questionsAfterLastError = 0;
+    lastIncorrectIndex = -1;
 }
 
 function showScreen(screenId) {
@@ -309,9 +324,8 @@ function startGame(difficulty) {
         resetSessionCounter();
     }
     
-    // Start with the first question
+    // Start with the first question (index 0)
     currentQuestionIndex = 0;
-    mainProgressIndex = 0;
     isRetryQuestion = false;
     
     // Update difficulty display
